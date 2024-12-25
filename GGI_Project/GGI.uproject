@@ -3,6 +3,16 @@
 	"EngineAssociation": "{A506E20E-4D91-3D08-98EA-298F40F3093D}",
 	"Category": "",
 	"Description": "",
+	"Modules": [
+		{
+			"Name": "GGI",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine"
+			]
+		}
+	],
 	"Plugins": [
 		{
 			"Name": "OpenXR",

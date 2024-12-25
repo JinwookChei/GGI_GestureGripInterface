@@ -1,0 +1,8 @@
+{
+	"SourceFiles": [
+		"D:\\GGI_GestureGripInterface\\GGI_Project\\Source\\GGI\\GGI.Build.cs",
+		"D:\\GGI_GestureGripInterface\\GGI_Project\\Source\\GGI.Target.cs",
+		"D:\\GGI_GestureGripInterface\\GGI_Project\\Source\\GGIEditor.Target.cs"
+	],
+	"EngineVersion": "5.4.3"
+}
