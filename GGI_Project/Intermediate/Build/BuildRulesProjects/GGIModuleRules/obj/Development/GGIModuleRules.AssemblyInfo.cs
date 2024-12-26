@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GGIModuleRules")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Development")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bdab9d26721353707e8a15d6a99a559afb70b053")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b971e2e9e8a2cd992d1f7b962d0d9d52678cf906")]
 [assembly: System.Reflection.AssemblyProductAttribute("GGIModuleRules")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GGIModuleRules")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

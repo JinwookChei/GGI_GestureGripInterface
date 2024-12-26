@@ -10,6 +10,6 @@ public class GGITarget : TargetRules
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V5;
 
-		ExtraModuleNames.AddRange( new string[] { "GGI" } );
+		ExtraModuleNames.AddRange( new string[] { "GGI", "HeadMountedDisplay", "OculusXRInput", "OculusXRHMD" } );
 	}
 }
