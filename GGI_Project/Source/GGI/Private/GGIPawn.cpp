@@ -7,6 +7,7 @@
 #include "OculusXRHandComponent.h"
 #include "OculusXRInputFunctionLibrary.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
+#include "GGIXRHandComponent.h"
 
 // Sets default values
 AGGIPawn::AGGIPawn()
@@ -37,13 +38,23 @@ AGGIPawn::AGGIPawn()
     LeftController->SetupAttachment(Root);
     LeftController->SetTrackingSource(EControllerHand::Left); // 왼손 설정
 
+    //// 오른손 OculusXR Hand 컴포넌트 생성
+    //RightHand = CreateDefaultSubobject<UOculusXRHandComponent>(TEXT("RightHand"));
+    //RightHand->SetupAttachment(RightController);
+    //RightHand->SkeletonType = EOculusXRHandType::HandRight;
+
+    //// 왼손 OculusXR Hand 컴포넌트 생성
+    //LeftHand = CreateDefaultSubobject<UOculusXRHandComponent>(TEXT("LeftHand"));
+    //LeftHand->SetupAttachment(LeftController);
+    //LeftHand->SkeletonType = EOculusXRHandType::HandLeft;
+
     // 오른손 OculusXR Hand 컴포넌트 생성
-    RightHand = CreateDefaultSubobject<UOculusXRHandComponent>(TEXT("RightHand"));
+    RightHand = CreateDefaultSubobject<UGGIXRHandComponent>(TEXT("RightHand"));
     RightHand->SetupAttachment(RightController);
     RightHand->SkeletonType = EOculusXRHandType::HandRight;
 
     // 왼손 OculusXR Hand 컴포넌트 생성
-    LeftHand = CreateDefaultSubobject<UOculusXRHandComponent>(TEXT("LeftHand"));
+    LeftHand = CreateDefaultSubobject<UGGIXRHandComponent>(TEXT("LeftHand"));
     LeftHand->SetupAttachment(LeftController);
     LeftHand->SkeletonType = EOculusXRHandType::HandLeft;
 }

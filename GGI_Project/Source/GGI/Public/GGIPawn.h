@@ -42,12 +42,20 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	class UMotionControllerComponent* LeftController;
 
+	//// OculusXR Hand - ¿À¸¥¼Õ
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	//class UOculusXRHandComponent* RightHand;
+
+	//// OculusXR Hand - ¿Þ¼Õ
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	//class UOculusXRHandComponent* LeftHand;
+
 	// OculusXR Hand - ¿À¸¥¼Õ
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	class UOculusXRHandComponent* RightHand;
+	class UGGIXRHandComponent* RightHand;
 
 	// OculusXR Hand - ¿Þ¼Õ
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	class UOculusXRHandComponent* LeftHand;
+	class UGGIXRHandComponent* LeftHand;
 	
 };

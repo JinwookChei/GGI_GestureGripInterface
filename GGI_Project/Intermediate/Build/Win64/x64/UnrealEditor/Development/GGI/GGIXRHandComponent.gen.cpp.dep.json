@@ -1,0 +1,25 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\unrealeditor\\inc\\ggi\\uht\\ggixrhandcomponent.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "d:\\unrealengine\\engine\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.cpp20.inclorderoldest.h.pch",
+        "Includes": [
+            "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\ggi\\definitions.ggi.h",
+            "d:\\ggi_gesturegripinterface\\ggi_project\\source\\ggi\\public\\ggixrhandcomponent.h",
+            "d:\\unrealengine\\engine\\plugins\\runtime\\oculusxr\\oculusxr\\source\\oculusxrinput\\public\\oculusxrhandcomponent.h",
+            "d:\\unrealengine\\engine\\plugins\\runtime\\oculusxr\\oculusxr\\source\\oculusxrinput\\public\\oculusxrinputfunctionlibrary.h",
+            "d:\\unrealengine\\engine\\source\\runtime\\engine\\classes\\components\\capsulecomponent.h",
+            "d:\\unrealengine\\engine\\source\\runtime\\engine\\classes\\components\\shapecomponent.h",
+            "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\shapecomponent.generated.h",
+            "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\capsulecomponent.generated.h",
+            "d:\\unrealengine\\engine\\plugins\\runtime\\oculusxr\\oculusxr\\intermediate\\build\\win64\\unrealeditor\\inc\\oculusxrinput\\uht\\oculusxrinputfunctionlibrary.generated.h",
+            "d:\\unrealengine\\engine\\source\\runtime\\engine\\classes\\components\\poseablemeshcomponent.h",
+            "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\poseablemeshcomponent.generated.h",
+            "d:\\unrealengine\\engine\\plugins\\runtime\\oculusxr\\oculusxr\\intermediate\\build\\win64\\unrealeditor\\inc\\oculusxrinput\\uht\\oculusxrhandcomponent.generated.h",
+            "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\unrealeditor\\inc\\ggi\\uht\\ggixrhandcomponent.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

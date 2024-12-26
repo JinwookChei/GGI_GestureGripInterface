@@ -1,0 +1,19 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "d:\\ggi_gesturegripinterface\\ggi_project\\source\\ggi\\private\\ggigamemode.cpp",
+        "ProvidedModule": "",
+        "PCH": "d:\\unrealengine\\engine\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.cpp20.inclorderoldest.h.pch",
+        "Includes": [
+            "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\ggi\\definitions.ggi.h",
+            "d:\\ggi_gesturegripinterface\\ggi_project\\source\\ggi\\public\\ggigamemode.h",
+            "d:\\unrealengine\\engine\\source\\runtime\\engine\\classes\\gameframework\\gamemodebase.h",
+            "d:\\unrealengine\\engine\\source\\runtime\\engine\\classes\\engine\\serverstatreplicator.h",
+            "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\serverstatreplicator.generated.h",
+            "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\gamemodebase.generated.h",
+            "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\unrealeditor\\inc\\ggi\\uht\\ggigamemode.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

@@ -15,8 +15,8 @@ ENGINE_API UClass* Z_Construct_UClass_UCameraComponent_NoRegister();
 ENGINE_API UClass* Z_Construct_UClass_USceneComponent_NoRegister();
 GGI_API UClass* Z_Construct_UClass_AGGIPawn();
 GGI_API UClass* Z_Construct_UClass_AGGIPawn_NoRegister();
+GGI_API UClass* Z_Construct_UClass_UGGIXRHandComponent_NoRegister();
 HEADMOUNTEDDISPLAY_API UClass* Z_Construct_UClass_UMotionControllerComponent_NoRegister();
-OCULUSXRINPUT_API UClass* Z_Construct_UClass_UOculusXRHandComponent_NoRegister();
 UPackage* Z_Construct_UPackage__Script_GGI();
 // End Cross Module References
 
@@ -127,8 +127,8 @@ const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AGGIPawn_Stati
 const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AGGIPawn_Statics::NewProp_CameraComponent = { "CameraComponent", nullptr, (EPropertyFlags)0x00100000000a001d, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AGGIPawn, CameraComponent), Z_Construct_UClass_UCameraComponent_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_CameraComponent_MetaData), NewProp_CameraComponent_MetaData) };
 const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AGGIPawn_Statics::NewProp_RightController = { "RightController", nullptr, (EPropertyFlags)0x00100000000a001d, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AGGIPawn, RightController), Z_Construct_UClass_UMotionControllerComponent_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_RightController_MetaData), NewProp_RightController_MetaData) };
 const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AGGIPawn_Statics::NewProp_LeftController = { "LeftController", nullptr, (EPropertyFlags)0x00100000000a001d, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AGGIPawn, LeftController), Z_Construct_UClass_UMotionControllerComponent_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_LeftController_MetaData), NewProp_LeftController_MetaData) };
-const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AGGIPawn_Statics::NewProp_RightHand = { "RightHand", nullptr, (EPropertyFlags)0x00100000000a001d, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AGGIPawn, RightHand), Z_Construct_UClass_UOculusXRHandComponent_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_RightHand_MetaData), NewProp_RightHand_MetaData) };
-const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AGGIPawn_Statics::NewProp_LeftHand = { "LeftHand", nullptr, (EPropertyFlags)0x00100000000a001d, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AGGIPawn, LeftHand), Z_Construct_UClass_UOculusXRHandComponent_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_LeftHand_MetaData), NewProp_LeftHand_MetaData) };
+const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AGGIPawn_Statics::NewProp_RightHand = { "RightHand", nullptr, (EPropertyFlags)0x00100000000a001d, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AGGIPawn, RightHand), Z_Construct_UClass_UGGIXRHandComponent_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_RightHand_MetaData), NewProp_RightHand_MetaData) };
+const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AGGIPawn_Statics::NewProp_LeftHand = { "LeftHand", nullptr, (EPropertyFlags)0x00100000000a001d, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AGGIPawn, LeftHand), Z_Construct_UClass_UGGIXRHandComponent_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_LeftHand_MetaData), NewProp_LeftHand_MetaData) };
 const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_AGGIPawn_Statics::PropPointers[] = {
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AGGIPawn_Statics::NewProp_Root,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AGGIPawn_Statics::NewProp_CameraComponent,
@@ -178,10 +178,10 @@ AGGIPawn::~AGGIPawn() {}
 struct Z_CompiledInDeferFile_FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_GGIPawn_h_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_AGGIPawn, AGGIPawn::StaticClass, TEXT("AGGIPawn"), &Z_Registration_Info_UClass_AGGIPawn, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AGGIPawn), 2908849500U) },
+		{ Z_Construct_UClass_AGGIPawn, AGGIPawn::StaticClass, TEXT("AGGIPawn"), &Z_Registration_Info_UClass_AGGIPawn, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AGGIPawn), 2259660269U) },
 	};
 };
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_GGIPawn_h_2265253566(TEXT("/Script/GGI"),
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_GGIPawn_h_1594188833(TEXT("/Script/GGI"),
 	Z_CompiledInDeferFile_FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_GGIPawn_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_GGIPawn_h_Statics::ClassInfo),
 	nullptr, 0,
 	nullptr, 0);

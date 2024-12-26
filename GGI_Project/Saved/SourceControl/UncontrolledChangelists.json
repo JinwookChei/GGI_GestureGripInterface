@@ -6,9 +6,10 @@
 			"description": "Default Uncontrolled Changelist",
 			"files": [
 				"D:/GGI_GestureGripInterface/GGI_Project/Content/VRTemplate/Maps/VRTemplateMap.umap",
-				"D:/GGI_GestureGripInterface/GGI_Project/Content/BP_GGIPawn.uasset",
 				"D:/GGI_GestureGripInterface/GGI_Project/Content/Blueprints/BP_GGIPawn.uasset",
-				"D:/GGI_GestureGripInterface/GGI_Project/Content/BP_GGIGameMode.uasset"
+				"D:/GGI_GestureGripInterface/GGI_Project/Content/BP_GGIGameMode.uasset",
+				"D:/GGI_GestureGripInterface/GGI_Project/Content/Blueprints/BP_GGIGameMode.uasset",
+				"D:/GGI_GestureGripInterface/GGI_Project/Content/BP_GGIPawn.uasset"
 			]
 		}
 	]

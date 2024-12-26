@@ -60,6 +60,9 @@
     <ClCompile Include="..\..\Source\GGI\Private\GGIPawn.cpp">
       <Filter>Source\GGI\Private</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\GGI\Private\GGIXRHandComponent.cpp">
+      <Filter>Source\GGI\Private</Filter>
+    </ClCompile>
     <Filter Include="Source\GGI\Public">
       <UniqueIdentifier>{AEFD6CFE-11F9-3525-A359-8733E4FC4F3D}</UniqueIdentifier>
     </Filter>
@@ -73,6 +76,9 @@
       <Filter>Source\GGI\Public</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\GGI\Public\GGIPawn.h">
+      <Filter>Source\GGI\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\GGI\Public\GGIXRHandComponent.h">
       <Filter>Source\GGI\Public</Filter>
     </ClInclude>
   </ItemGroup>
