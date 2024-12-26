@@ -48,12 +48,30 @@
     <Filter Include="Source\GGI\Private">
       <UniqueIdentifier>{2DCAB7CD-05A4-3895-A3A6-CD8DE46D17E3}</UniqueIdentifier>
     </Filter>
+    <ClCompile Include="..\..\Source\GGI\Private\CommonType.cpp">
+      <Filter>Source\GGI\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\GGI\Private\GGIGameInstance.cpp">
+      <Filter>Source\GGI\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\GGI\Private\GGIGameMode.cpp">
+      <Filter>Source\GGI\Private</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\GGI\Private\GGIPawn.cpp">
       <Filter>Source\GGI\Private</Filter>
     </ClCompile>
     <Filter Include="Source\GGI\Public">
       <UniqueIdentifier>{AEFD6CFE-11F9-3525-A359-8733E4FC4F3D}</UniqueIdentifier>
     </Filter>
+    <ClInclude Include="..\..\Source\GGI\Public\CommonType.h">
+      <Filter>Source\GGI\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\GGI\Public\GGIGameInstance.h">
+      <Filter>Source\GGI\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\GGI\Public\GGIGameMode.h">
+      <Filter>Source\GGI\Public</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\GGI\Public\GGIPawn.h">
       <Filter>Source\GGI\Public</Filter>
     </ClInclude>
