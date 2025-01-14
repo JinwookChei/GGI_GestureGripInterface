@@ -14,7 +14,8 @@ class GGI_API UGGIXRHandComponent : public UOculusXRHandComponent
 {
 	GENERATED_BODY()
 	
-	
+public:
+	//const TArray<FTransform>& GetBoneSpaceTransforms() const;
 	
 	
 };

@@ -1,0 +1,41 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "d:\\ggi_gesturegripinterface\\ggi_project\\source\\ggi\\private\\handmotioncapturecomponent.cpp",
+        "ProvidedModule": "",
+        "PCH": "d:\\unrealengine\\engine\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.cpp20.inclorderoldest.h.pch",
+        "Includes": [
+            "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\ggi\\definitions.ggi.h",
+            "d:\\ggi_gesturegripinterface\\ggi_project\\source\\ggi\\public\\handmotioncapturecomponent.h",
+            "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\unrealeditor\\inc\\ggi\\uht\\handmotioncapturecomponent.generated.h",
+            "d:\\ggi_gesturegripinterface\\ggi_project\\source\\ggi\\public\\ggigameinstance.h",
+            "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\unrealeditor\\inc\\ggi\\uht\\ggigameinstance.generated.h",
+            "d:\\ggi_gesturegripinterface\\ggi_project\\source\\ggi\\public\\ggipawn.h",
+            "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\unrealeditor\\inc\\ggi\\uht\\ggipawn.generated.h",
+            "d:\\unrealengine\\engine\\source\\runtime\\engine\\classes\\kismet\\gameplaystatics.h",
+            "d:\\unrealengine\\engine\\source\\runtime\\engine\\classes\\kismet\\kismetsystemlibrary.h",
+            "d:\\unrealengine\\engine\\source\\runtime\\coreuobject\\public\\uobject\\propertyaccessutil.h",
+            "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\kismetsystemlibrary.generated.h",
+            "d:\\unrealengine\\engine\\source\\runtime\\engine\\classes\\sound\\dialoguetypes.h",
+            "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\dialoguetypes.generated.h",
+            "d:\\unrealengine\\engine\\source\\runtime\\engine\\classes\\kismet\\gameplaystaticstypes.h",
+            "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\gameplaystaticstypes.generated.h",
+            "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\gameplaystatics.generated.h",
+            "d:\\ggi_gesturegripinterface\\ggi_project\\source\\ggi\\public\\commontype.h",
+            "d:\\ggi_gesturegripinterface\\ggi_project\\source\\ggi\\public\\ggixrhandcomponent.h",
+            "d:\\unrealengine\\engine\\plugins\\runtime\\oculusxr\\oculusxr\\source\\oculusxrinput\\public\\oculusxrhandcomponent.h",
+            "d:\\unrealengine\\engine\\plugins\\runtime\\oculusxr\\oculusxr\\source\\oculusxrinput\\public\\oculusxrinputfunctionlibrary.h",
+            "d:\\unrealengine\\engine\\source\\runtime\\engine\\classes\\components\\capsulecomponent.h",
+            "d:\\unrealengine\\engine\\source\\runtime\\engine\\classes\\components\\shapecomponent.h",
+            "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\shapecomponent.generated.h",
+            "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\capsulecomponent.generated.h",
+            "d:\\unrealengine\\engine\\plugins\\runtime\\oculusxr\\oculusxr\\intermediate\\build\\win64\\unrealeditor\\inc\\oculusxrinput\\uht\\oculusxrinputfunctionlibrary.generated.h",
+            "d:\\unrealengine\\engine\\source\\runtime\\engine\\classes\\components\\poseablemeshcomponent.h",
+            "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\poseablemeshcomponent.generated.h",
+            "d:\\unrealengine\\engine\\plugins\\runtime\\oculusxr\\oculusxr\\intermediate\\build\\win64\\unrealeditor\\inc\\oculusxrinput\\uht\\oculusxrhandcomponent.generated.h",
+            "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\unrealeditor\\inc\\ggi\\uht\\ggixrhandcomponent.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

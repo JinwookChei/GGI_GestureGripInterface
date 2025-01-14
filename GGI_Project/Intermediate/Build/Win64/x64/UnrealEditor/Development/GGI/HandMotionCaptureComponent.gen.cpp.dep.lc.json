@@ -1,0 +1,15 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\unrealeditor\\inc\\ggi\\uht\\handmotioncapturecomponent.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "d:\\unrealengine\\engine\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.cpp20.inclorderoldest.h.pch",
+        "Includes": [
+            "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\ggi\\definitions.ggi.h",
+            "d:\\ggi_gesturegripinterface\\ggi_project\\source\\ggi\\public\\handmotioncapturecomponent.h",
+            "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\unrealeditor\\inc\\ggi\\uht\\handmotioncapturecomponent.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

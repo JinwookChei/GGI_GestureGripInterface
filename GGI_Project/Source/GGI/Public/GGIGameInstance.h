@@ -15,6 +15,9 @@ class GGI_API UGGIGameInstance : public UGameInstance
 	GENERATED_BODY()
 	
 	
-	
+public:
+	int32 LearningSampleNum = 20;
+
+	int32 TimeStep = 80;
 	
 };

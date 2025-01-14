@@ -3,6 +3,7 @@
 
 #include "GGIXRHandComponent.h"
 
-
-
-
+//const TArray<FTransform>& UGGIXRHandComponent::GetBoneSpaceTransforms() const
+//{
+//	return BoneSpaceTransforms;
+//}

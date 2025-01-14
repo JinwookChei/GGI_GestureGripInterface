@@ -14,7 +14,7 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 #endif
 #define GGI_GGIPawn_generated_h
 
-#define FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_GGIPawn_h_12_INCLASS_NO_PURE_DECLS \
+#define FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_GGIPawn_h_14_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesAGGIPawn(); \
 	friend struct Z_Construct_UClass_AGGIPawn_Statics; \
@@ -23,7 +23,7 @@ public: \
 	DECLARE_SERIALIZER(AGGIPawn)
 
 
-#define FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_GGIPawn_h_12_ENHANCED_CONSTRUCTORS \
+#define FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_GGIPawn_h_14_ENHANCED_CONSTRUCTORS \
 private: \
 	/** Private move- and copy-constructors, should never be used */ \
 	AGGIPawn(AGGIPawn&&); \
@@ -35,12 +35,12 @@ public: \
 	NO_API virtual ~AGGIPawn();
 
 
-#define FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_GGIPawn_h_9_PROLOG
-#define FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_GGIPawn_h_12_GENERATED_BODY \
+#define FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_GGIPawn_h_11_PROLOG
+#define FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_GGIPawn_h_14_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_GGIPawn_h_12_INCLASS_NO_PURE_DECLS \
-	FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_GGIPawn_h_12_ENHANCED_CONSTRUCTORS \
+	FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_GGIPawn_h_14_INCLASS_NO_PURE_DECLS \
+	FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_GGIPawn_h_14_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 

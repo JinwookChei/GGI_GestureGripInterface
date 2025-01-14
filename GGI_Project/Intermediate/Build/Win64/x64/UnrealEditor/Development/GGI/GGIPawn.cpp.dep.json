@@ -37,7 +37,8 @@
             "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\headmounteddisplay\\uht\\iidentifiablexrdevice.generated.h",
             "d:\\unrealengine\\engine\\plugins\\runtime\\xrbase\\intermediate\\build\\win64\\unrealeditor\\inc\\xrbase\\uht\\headmounteddisplayfunctionlibrary.generated.h",
             "d:\\ggi_gesturegripinterface\\ggi_project\\source\\ggi\\public\\ggixrhandcomponent.h",
-            "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\unrealeditor\\inc\\ggi\\uht\\ggixrhandcomponent.generated.h"
+            "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\unrealeditor\\inc\\ggi\\uht\\ggixrhandcomponent.generated.h",
+            "d:\\ggi_gesturegripinterface\\ggi_project\\source\\ggi\\public\\commontype.h"
         ],
         "ImportedModules": [],
         "ImportedHeaderUnits": []
