@@ -57,6 +57,9 @@
     <ClCompile Include="..\..\Source\GGI\Private\GGIGameMode.cpp">
       <Filter>Source\GGI\Private</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\GGI\Private\GGIMotionControllerComponent.cpp">
+      <Filter>Source\GGI\Private</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\GGI\Private\GGIPawn.cpp">
       <Filter>Source\GGI\Private</Filter>
     </ClCompile>
@@ -76,6 +79,9 @@
       <Filter>Source\GGI\Public</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\GGI\Public\GGIGameMode.h">
+      <Filter>Source\GGI\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\GGI\Public\GGIMotionControllerComponent.h">
       <Filter>Source\GGI\Public</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\GGI\Public\GGIPawn.h">

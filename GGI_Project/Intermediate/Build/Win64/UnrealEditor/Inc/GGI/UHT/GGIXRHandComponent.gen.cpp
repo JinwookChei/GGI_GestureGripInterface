@@ -75,7 +75,6 @@ template<> GGI_API UClass* StaticClass<UGGIXRHandComponent>()
 {
 	return UGGIXRHandComponent::StaticClass();
 }
-UGGIXRHandComponent::UGGIXRHandComponent(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) {}
 DEFINE_VTABLE_PTR_HELPER_CTOR(UGGIXRHandComponent);
 UGGIXRHandComponent::~UGGIXRHandComponent() {}
 // End Class UGGIXRHandComponent

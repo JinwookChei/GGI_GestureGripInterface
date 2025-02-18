@@ -24,8 +24,6 @@ public: \
 
 
 #define FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_GGIXRHandComponent_h_15_ENHANCED_CONSTRUCTORS \
-	/** Standard constructor, called after all reflected properties have been initialized */ \
-	NO_API UGGIXRHandComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get()); \
 private: \
 	/** Private move- and copy-constructors, should never be used */ \
 	UGGIXRHandComponent(UGGIXRHandComponent&&); \
@@ -33,7 +31,7 @@ private: \
 public: \
 	DECLARE_VTABLE_PTR_HELPER_CTOR(NO_API, UGGIXRHandComponent); \
 	DEFINE_VTABLE_PTR_HELPER_CTOR_CALLER(UGGIXRHandComponent); \
-	DEFINE_DEFAULT_OBJECT_INITIALIZER_CONSTRUCTOR_CALL(UGGIXRHandComponent) \
+	DEFINE_DEFAULT_CONSTRUCTOR_CALL(UGGIXRHandComponent) \
 	NO_API virtual ~UGGIXRHandComponent();
 
 

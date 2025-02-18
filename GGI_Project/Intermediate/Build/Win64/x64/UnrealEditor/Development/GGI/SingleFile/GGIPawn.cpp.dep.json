@@ -654,6 +654,7 @@
             "d:\\unrealengine\\engine\\source\\runtime\\engine\\public\\enginedefines.h",
             "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\cameratypes.generated.h",
             "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\cameracomponent.generated.h",
+            "d:\\ggi_gesturegripinterface\\ggi_project\\source\\ggi\\public\\ggimotioncontrollercomponent.h",
             "d:\\unrealengine\\engine\\source\\runtime\\headmounteddisplay\\public\\motioncontrollercomponent.h",
             "d:\\unrealengine\\engine\\source\\runtime\\engine\\classes\\components\\primitivecomponent.h",
             "d:\\unrealengine\\engine\\source\\runtime\\core\\public\\algo\\copy.h",
@@ -906,6 +907,7 @@
             "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\headmounteddisplay\\uht\\imotioncontroller.generated.h",
             "d:\\unrealengine\\engine\\source\\runtime\\headmounteddisplay\\public\\lateupdatemanager.h",
             "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\headmounteddisplay\\uht\\motioncontrollercomponent.generated.h",
+            "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\unrealeditor\\inc\\ggi\\uht\\ggimotioncontrollercomponent.generated.h",
             "d:\\unrealengine\\engine\\plugins\\runtime\\oculusxr\\oculusxr\\source\\oculusxrinput\\public\\oculusxrhandcomponent.h",
             "d:\\unrealengine\\engine\\plugins\\runtime\\oculusxr\\oculusxr\\source\\oculusxrinput\\public\\oculusxrinputfunctionlibrary.h",
             "d:\\unrealengine\\engine\\source\\runtime\\engine\\classes\\components\\capsulecomponent.h",
@@ -956,7 +958,9 @@
             "d:\\unrealengine\\engine\\plugins\\runtime\\xrbase\\intermediate\\build\\win64\\unrealeditor\\inc\\xrbase\\uht\\headmounteddisplayfunctionlibrary.generated.h",
             "d:\\ggi_gesturegripinterface\\ggi_project\\source\\ggi\\public\\ggixrhandcomponent.h",
             "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\unrealeditor\\inc\\ggi\\uht\\ggixrhandcomponent.generated.h",
-            "d:\\ggi_gesturegripinterface\\ggi_project\\source\\ggi\\public\\commontype.h"
+            "d:\\ggi_gesturegripinterface\\ggi_project\\source\\ggi\\public\\commontype.h",
+            "d:\\ggi_gesturegripinterface\\ggi_project\\source\\ggi\\public\\handmotioncapturecomponent.h",
+            "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\unrealeditor\\inc\\ggi\\uht\\handmotioncapturecomponent.generated.h"
         ],
         "ImportedModules": [],
         "ImportedHeaderUnits": []

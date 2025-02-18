@@ -1,0 +1,25 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "d:\\ggi_gesturegripinterface\\ggi_project\\source\\ggi\\private\\ggimotioncontrollercomponent.cpp",
+        "ProvidedModule": "",
+        "PCH": "d:\\unrealengine\\engine\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.cpp20.inclorderoldest.h.pch",
+        "Includes": [
+            "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\ggi\\definitions.ggi.h",
+            "d:\\ggi_gesturegripinterface\\ggi_project\\source\\ggi\\public\\ggimotioncontrollercomponent.h",
+            "d:\\unrealengine\\engine\\source\\runtime\\headmounteddisplay\\public\\motioncontrollercomponent.h",
+            "d:\\unrealengine\\engine\\source\\runtime\\engine\\public\\sceneviewextension.h",
+            "d:\\unrealengine\\engine\\source\\runtime\\engine\\public\\sceneviewextensioncontext.h",
+            "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\sceneviewextensioncontext.generated.h",
+            "d:\\unrealengine\\engine\\source\\runtime\\engine\\public\\scenetexturesconfig.h",
+            "d:\\unrealengine\\engine\\source\\runtime\\rendercore\\public\\gbufferinfo.h",
+            "d:\\unrealengine\\engine\\source\\runtime\\headmounteddisplay\\public\\imotioncontroller.h",
+            "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\headmounteddisplay\\uht\\imotioncontroller.generated.h",
+            "d:\\unrealengine\\engine\\source\\runtime\\headmounteddisplay\\public\\lateupdatemanager.h",
+            "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\headmounteddisplay\\uht\\motioncontrollercomponent.generated.h",
+            "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\unrealeditor\\inc\\ggi\\uht\\ggimotioncontrollercomponent.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

@@ -9,6 +9,7 @@
 #include "UObject/ScriptMacros.h"
 
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
+class UGGIMotionControllerComponent;
 class UGGIXRHandComponent;
 enum class EHandDataLabel : uint8;
 #ifdef GGI_HandMotionCaptureComponent_generated_h
@@ -19,7 +20,8 @@ enum class EHandDataLabel : uint8;
 #define FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_HandMotionCaptureComponent_h_13_RPC_WRAPPERS_NO_PURE_DECLS \
 	DECLARE_FUNCTION(execExportHandDatasToCSV); \
 	DECLARE_FUNCTION(execInitialize_CSVData); \
-	DECLARE_FUNCTION(execStartWriteCSVData);
+	DECLARE_FUNCTION(execStartWriteCSVData); \
+	DECLARE_FUNCTION(execInitialize);
 
 
 #define FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_HandMotionCaptureComponent_h_13_INCLASS_NO_PURE_DECLS \

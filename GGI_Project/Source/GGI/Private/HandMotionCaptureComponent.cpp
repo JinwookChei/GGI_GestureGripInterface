@@ -7,9 +7,11 @@
 #include "Kismet/GameplayStatics.h"
 #include "CommonType.h"
 #include "GGIXRHandComponent.h"
+#include "GGIMotionControllerComponent.h"
 
 #include "OculusXRInputFunctionLibrary.h"
 #include "Components/PoseableMeshComponent.h"
+
 
 // Sets default values for this component's properties
 UHandMotionCaptureComponent::UHandMotionCaptureComponent()
@@ -19,19 +21,32 @@ UHandMotionCaptureComponent::UHandMotionCaptureComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	// ...
-        // ...
-    UGGIGameInstance* GGIGameInstance = Cast<UGGIGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-    if (GGIGameInstance)
-    {
-        LearningSampleNum = GGIGameInstance->LearningSampleNum;
+		// ...
+	UGGIGameInstance* GGIGameInstance = Cast<UGGIGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (GGIGameInstance)
+	{
+		LearningSampleNum = GGIGameInstance->LearningSampleNum;
 
-        TimeStep = GGIGameInstance->TimeStep;
-    }
-    else
-    {
-        LearningSampleNum = 0;
-        TimeStep = 0;
-    }
+		TimeStep = GGIGameInstance->TimeStep;
+	}
+	else
+	{
+		LearningSampleNum = 0;
+		TimeStep = 0;
+	}
+
+	AGGIPawn* Owner = Cast<AGGIPawn>(GetOwner());
+
+	if (Owner)
+	{
+		UGGIMotionControllerComponent* _OwnerRightXRController = Cast<UGGIMotionControllerComponent>(Owner->GetDefaultSubobjectByName(TEXT("RightController")));
+		UGGIMotionControllerComponent* _OwnerLeftXRController = Cast<UGGIMotionControllerComponent>(Owner->GetDefaultSubobjectByName(TEXT("LeftController")));
+
+		UGGIXRHandComponent* _OwnerXRRightHand = Cast<UGGIXRHandComponent>(Owner->GetDefaultSubobjectByName(TEXT("RightHand")));
+		UGGIXRHandComponent* _OwnerXRLeftHand = Cast<UGGIXRHandComponent>(Owner->GetDefaultSubobjectByName(TEXT("LeftHand")));
+		Initialize(_OwnerRightXRController, _OwnerLeftXRController, _OwnerXRRightHand, _OwnerXRLeftHand);
+	}
+
 }
 
 
@@ -41,15 +56,10 @@ void UHandMotionCaptureComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-
-	OwnerPawn = Cast<AGGIPawn>(GetOwner());
-	if (OwnerPawn)
-	{
-		
-	}
-
 	TickCount = 9999;
-    LearningSampleCount = 9999;
+	LearningSampleCount = 9999;
+
+
 }
 
 
@@ -59,21 +69,62 @@ void UHandMotionCaptureComponent::TickComponent(float DeltaTime, ELevelTick Tick
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+	if (TickCount < 4000)
+	{
+		ExportHandDatasToCSV(HandDataLabel);
+		TickCount++;
+
+		FString Message = FString::Printf(TEXT("Hand Data Recording  -  %d / %d"), TickCount, TimeStep);
+		FColor TextColor = FColor::Red;
+		float DisplayTime = -1.0f;
+
+		GEngine->AddOnScreenDebugMessage(-1, DisplayTime, TextColor, Message);
+	}
+	else
+	{
+		TickCount = 9999;
+	}
+
+	PreRightHandLocation = OwnerRightXRController->GetRelativeLocation();
+	PreLeftHandLocation = OwnerLeftXRController->GetRelativeLocation();
+	//PreRightHandLocation = OwnerXRRightHand->GetBoneLocation(FName("Wrist Root"), EBoneSpaces::WorldSpace);
+	//PreLeftHandLocation = OwnerXRLeftHand->GetBoneLocation(FName("Wrist Root"), EBoneSpaces::WorldSpace);
 }
 
-void UHandMotionCaptureComponent::StartWriteCSVData(UGGIXRHandComponent* _RightHand, UGGIXRHandComponent* _LeftHand, EHandDataLabel _HandDataLabel)
+bool UHandMotionCaptureComponent::Initialize(UGGIMotionControllerComponent* _RightController, UGGIMotionControllerComponent* _LeftController, UGGIXRHandComponent* _RightHand, UGGIXRHandComponent* _LeftHand)
 {
-    if (nullptr == _RightHand || nullptr == _RightHand)
-    {
-        return;
-    }
+	if (nullptr == _RightHand || nullptr == _LeftHand)
+	{
+		return false;
+	}
 
-    OwnerXRRightHand = _RightHand;
-    OwnerXRLeftHand = _LeftHand;
+	if (nullptr == _RightController || nullptr == _LeftController)
+	{
+		return false;	
+	}
+
+	OwnerRightXRController = _RightController;
+	OwnerLeftXRController = _LeftController;
+
+	OwnerXRRightHand = _RightHand;
+	OwnerXRLeftHand = _LeftHand;
+
+	return true;	
+}
+
+void UHandMotionCaptureComponent::StartWriteCSVData(EHandDataLabel _HandDataLabel)
+{
+
 	HandDataLabel = _HandDataLabel;
 
-    PreRightHandLocation = OwnerXRRightHand->GetBoneLocation(FName("Wrist_Root"), EBoneSpaces::WorldSpace);
-    PreLeftHandLocation = OwnerXRLeftHand->GetBoneLocation(FName("Wrist_Root"), EBoneSpaces::WorldSpace);
+
+	// 메시지 내용, 메시지 키, 출력 시간(초), 텍스트 색상 지정
+	FString Message = TEXT("StartWriteCSVData!!!");
+	FColor TextColor = FColor::Green;
+	float DisplayTime = 5.0f; // 5초 동안 표시
+
+	// 메시지 출력 (키는 0부터 9999까지 임의로 설정 가능)
+	GEngine->AddOnScreenDebugMessage(-1, DisplayTime, TextColor, Message);
 
 	FTimerHandle TimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
@@ -96,15 +147,15 @@ void UHandMotionCaptureComponent::Initialize_CSVData()
 	{
 		IFileManager::Get().MakeDirectory(*Directory, true);
 	}
-
+	
 	// 파일 경로 
 	Filename = FPaths::Combine(Directory, TEXT("JointData.csv"));
 
 
-    CSVData = TEXT("R_WristRoot_Loc_Acc_X,R_WristRoot_Loc_Acc_Y,R_WristRoot_Loc_Acc_Z,");
-    CSVData += TEXT("L_WristRoot_Loc_Acc_X,L_WristRoot_Loc_Acc_Y,L_WristRoot_Loc_Acc_Z,");
-    CSVData += TEXT("R_WristRoot_Rot_Ptich,R_WristRoot_Rot_Yaw,R_WristRoot_Rot_Roll,");
-    CSVData += TEXT("L_WristRoot_Rot_Ptich,L_WristRoot_Rot_Yaw,L_WristRoot_Rot_Roll,");
+	CSVData = TEXT("R_WristRoot_Vel_X,R_WristRoot_Vel_Y,R_WristRoot_Vel_Z,");
+	CSVData += TEXT("L_WristRoot_Vel_X,L_WristRoot_Vel_Y,L_WristRoot_Vel_Z,");
+	CSVData += TEXT("R_WristRoot_Rot_Ptich,R_WristRoot_Rot_Yaw,R_WristRoot_Rot_Roll,");
+	CSVData += TEXT("L_WristRoot_Rot_Ptich,L_WristRoot_Rot_Yaw,L_WristRoot_Rot_Roll,");
 
 	CSVData += TEXT("R_Thumb0_Relative_Rot_Pitch,R_Thumb0_Relative_Rot_Yaw,R_Thumb0_Relative_Rot_Roll,");
 	CSVData += TEXT("L_Thumb0_Relative_Rot_Pitch,L_Thumb0_Relative_Rot_Yaw,L_Thumb0_Relative_Rot_Roll,");
@@ -149,108 +200,107 @@ void UHandMotionCaptureComponent::Initialize_CSVData()
 	CSVData += TEXT("R_Pinky3_Relative_Rot_Pitch,R_Pinky3_Relative_Rot_Yaw,R_Pinky3_Relative_Rot_Roll,");
 	CSVData += TEXT("L_Pinky3_Relative_Rot_Pitch,L_Pinky3_Relative_Rot_Yaw,L_Pinky3_Relative_Rot_Roll,");
 
-    CSVData += TEXT("Label\n");
+	CSVData += TEXT("Label\n");
 
 
-    // 메시지 내용, 메시지 키, 출력 시간(초), 텍스트 색상 지정
-    FString Message = TEXT("Start Data Cap!");
-    FColor TextColor = FColor::Green;
-    float DisplayTime = 5.0f; // 5초 동안 표시
+	// 메시지 내용, 메시지 키, 출력 시간(초), 텍스트 색상 지정
+	FString Message = TEXT("Initialize_CSVData!!!");
+	FColor TextColor = FColor::Green;
+	float DisplayTime = 5.0f; // 5초 동안 표시
 
-    // 메시지 출력 (키는 0부터 9999까지 임의로 설정 가능)
-    GEngine->AddOnScreenDebugMessage(-1, DisplayTime, TextColor, Message);
+	// 메시지 출력 (키는 0부터 9999까지 임의로 설정 가능)
+	GEngine->AddOnScreenDebugMessage(-1, DisplayTime, TextColor, Message);
 }
 
 void UHandMotionCaptureComponent::ExportHandDatasToCSV(EHandDataLabel _HandDataLabel)
 {
-    const TArray<FTransform>& RightBoneSpaceTransforms = OwnerXRRightHand->GetBoneSpaceTransforms();
-    const TArray<FTransform>& LeftBoneSpaceTransforms = OwnerXRLeftHand->GetBoneSpaceTransforms();
 
-    for (auto& BoneElem : OwnerXRRightHand->BoneNameMappings)
-    {
-        FVector JointLocation;
-        FRotator JointRotation;
+	for (auto& BoneElem : OwnerXRRightHand->BoneNameMappings)
+	{
+		FVector JointLocation;
+		FRotator JointRotation;
 
-        if (BoneElem.Key == EOculusXRBone::Forearm_Stub ||
-            BoneElem.Key == EOculusXRBone::Thumb_Tip ||
-            BoneElem.Key == EOculusXRBone::Index_Tip ||
-            BoneElem.Key == EOculusXRBone::Middle_Tip ||
-            BoneElem.Key == EOculusXRBone::Ring_Tip ||
-            BoneElem.Key == EOculusXRBone::Pinky_Tip)
-        {
+		if (BoneElem.Key == EOculusXRBone::Forearm_Stub ||
+			BoneElem.Key == EOculusXRBone::Thumb_Tip ||
+			BoneElem.Key == EOculusXRBone::Index_Tip ||
+			BoneElem.Key == EOculusXRBone::Middle_Tip ||
+			BoneElem.Key == EOculusXRBone::Ring_Tip ||
+			BoneElem.Key == EOculusXRBone::Pinky_Tip)
+		{
 
-        }
-        else if (BoneElem.Key == EOculusXRBone::Wrist_Root)
-        {
-            FVector CurrentRightHandLocation = OwnerXRRightHand->GetBoneLocation(BoneElem.Value, EBoneSpaces::WorldSpace);
-            FVector R_WristRoot_Loc_Acc = CurrentRightHandLocation - PreRightHandLocation;
-            PreRightHandLocation = CurrentRightHandLocation;
+		}
+		else if (BoneElem.Key == EOculusXRBone::Wrist_Root)
+		{
+			
+			FVector CurrentRightHandLocation = OwnerRightXRController->GetRelativeLocation();
+			FVector RightHandWristRootVelocity = CurrentRightHandLocation - PreRightHandLocation;
+			RightHandWristRootVelocity *= 10;
 
-            FVector CurrentLeftHandLocation = OwnerXRLeftHand->GetBoneLocation(BoneElem.Value, EBoneSpaces::WorldSpace);
-            FVector L_WristRoot_Loc_Acc = CurrentLeftHandLocation - PreLeftHandLocation;
-            PreLeftHandLocation = CurrentLeftHandLocation;
+			FVector CurrentLeftHandLocation = OwnerLeftXRController->GetRelativeLocation();
+			FVector LeftHandWristRootVelocity = CurrentLeftHandLocation - PreLeftHandLocation;
+			LeftHandWristRootVelocity *= 10;
 
-            FQuat R_WristRoot_Quat = OwnerXRRightHand->GetBoneQuaternion(BoneElem.Value, EBoneSpaces::ComponentSpace);
-            FQuat L_WristRoot_Quat = OwnerXRLeftHand->GetBoneQuaternion(BoneElem.Value, EBoneSpaces::ComponentSpace);
+			CSVData += FString::Printf(TEXT("%f,%f,%f,"), RightHandWristRootVelocity.X, RightHandWristRootVelocity.Y, RightHandWristRootVelocity.Z);
+			CSVData += FString::Printf(TEXT("%f,%f,%f,"), LeftHandWristRootVelocity.X, LeftHandWristRootVelocity.Y, LeftHandWristRootVelocity.Z);
 
-            FRotator R_WristRoot_Rot = R_WristRoot_Quat.Rotator();
-            FRotator L_WristRoot_Rot = L_WristRoot_Quat.Rotator();
+			
+			FRotator RightWristRootRelativeRotation = OwnerRightXRController->GetRelativeRotation();
+			FRotator LeftWristRootRelativeRotation = OwnerLeftXRController->GetRelativeRotation();
+			CSVData += FString::Printf(TEXT("%f,%f,%f,"), RightWristRootRelativeRotation.Pitch, RightWristRootRelativeRotation.Yaw, RightWristRootRelativeRotation.Roll);
+			CSVData += FString::Printf(TEXT("%f,%f,%f,"), LeftWristRootRelativeRotation.Pitch, LeftWristRootRelativeRotation.Yaw, LeftWristRootRelativeRotation.Roll);
 
-            CSVData += FString::Printf(TEXT("%f,%f,%f,"), R_WristRoot_Loc_Acc.X, R_WristRoot_Loc_Acc.Y, R_WristRoot_Loc_Acc.Z);
-            CSVData += FString::Printf(TEXT("%f,%f,%f,"), L_WristRoot_Loc_Acc.X, L_WristRoot_Loc_Acc.Y, L_WristRoot_Loc_Acc.Z);
+		}
+		else
+		{
+			FQuat RightBoneRelativeQuat = UOculusXRInputFunctionLibrary::GetBoneRotation(EOculusXRHandType::HandRight, BoneElem.Key, 0);
+			FQuat LeftBoneRelativeQuat = UOculusXRInputFunctionLibrary::GetBoneRotation(EOculusXRHandType::HandLeft, BoneElem.Key, 0);
 
-            CSVData += FString::Printf(TEXT("%f,%f,%f,"), R_WristRoot_Rot.Pitch, R_WristRoot_Rot.Yaw, R_WristRoot_Rot.Roll);
-            CSVData += FString::Printf(TEXT("%f,%f,%f,"), L_WristRoot_Rot.Pitch, L_WristRoot_Rot.Yaw, L_WristRoot_Rot.Roll);
-        }
-        else
-        {
-            int32 BoneIndex = OwnerXRRightHand->GetSkinnedAsset()->GetRefSkeleton().FindBoneIndex(BoneElem.Value);
+			FRotator RightBoneRelativeRotator = RightBoneRelativeQuat.Rotator();
+			FRotator LeftBoneRelativeRotator = LeftBoneRelativeQuat.Rotator();
 
-            FRotator RightBoneRotation = RightBoneSpaceTransforms[BoneIndex].Rotator();
-            FRotator LeftBoneRotation = LeftBoneSpaceTransforms[BoneIndex].Rotator();
+			CSVData += FString::Printf(TEXT("%f,%f,%f,"), RightBoneRelativeRotator.Pitch, RightBoneRelativeRotator.Yaw, RightBoneRelativeRotator.Roll);
+			CSVData += FString::Printf(TEXT("%f,%f,%f,"), LeftBoneRelativeRotator.Pitch, LeftBoneRelativeRotator.Yaw, LeftBoneRelativeRotator.Roll);
+		}
+		GetWorld();
+	}
 
-            CSVData += FString::Printf(TEXT("%f,%f,%f,"), RightBoneRotation.Pitch, RightBoneRotation.Yaw, RightBoneRotation.Roll);
-            CSVData += FString::Printf(TEXT("%f,%f,%f,"), LeftBoneRotation.Pitch, LeftBoneRotation.Yaw, LeftBoneRotation.Roll);
-        }
-    }
+	switch (HandDataLabel)
+	{
+	case EHandDataLabel::Idle:
+		CSVData += FString::Printf(TEXT("%d\n"), EHandDataLabel::Idle);
+		break;
+	case EHandDataLabel::Bow:
+		CSVData += FString::Printf(TEXT("%d\n"), EHandDataLabel::Bow);
+		break;
+	case EHandDataLabel::Sword:
+		CSVData += FString::Printf(TEXT("%d\n"), EHandDataLabel::Sword);
+		break;
+	case EHandDataLabel::Pistol:
+		CSVData += FString::Printf(TEXT("%d\n"), EHandDataLabel::Pistol);
+		break;
+	case EHandDataLabel::MachineGun:
+		CSVData += FString::Printf(TEXT("%d\n"), EHandDataLabel::MachineGun);
+		break;
+	case EHandDataLabel::Spear:
+		CSVData += FString::Printf(TEXT("%d\n"), EHandDataLabel::Spear);
+		break;
+	case EHandDataLabel::Grenade:
+		CSVData += FString::Printf(TEXT("%d\n"), EHandDataLabel::Grenade);
+	default:
+		break;
+	}
 
-    switch (HandDataLabel)
-    {
-    case EHandDataLabel::Idle:
-        CSVData += FString::Printf(TEXT("%d\n"), EHandDataLabel::Idle);
-        break;
-    case EHandDataLabel::Bow:
-        CSVData += FString::Printf(TEXT("%d\n"), EHandDataLabel::Bow);
-        break;
-    case EHandDataLabel::Sword:
-        CSVData += FString::Printf(TEXT("%d\n"), EHandDataLabel::Sword);
-        break;
-    case EHandDataLabel::Pistol:
-        CSVData += FString::Printf(TEXT("%d\n"), EHandDataLabel::Pistol);
-        break;
-    case EHandDataLabel::MachineGun:
-        CSVData += FString::Printf(TEXT("%d\n"), EHandDataLabel::MachineGun);
-        break;
-    case EHandDataLabel::Spear:
-        CSVData += FString::Printf(TEXT("%d\n"), EHandDataLabel::Spear);
-        break;
-    case EHandDataLabel::Grenade:
-        CSVData += FString::Printf(TEXT("%d\n"), EHandDataLabel::Grenade);
-    default:
-        break;
-    }
+	// Save the CSV data to the file
+	if (FFileHelper::SaveStringToFile(CSVData, *Filename))
+	{
+		UE_LOG(LogTemp, Log, TEXT("CSV file created successfully at %s"), *Filename);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to create CSV file at %s"), *Filename);
+	}
 
-    // Save the CSV data to the file
-    if (FFileHelper::SaveStringToFile(CSVData, *Filename))
-    {
-        UE_LOG(LogTemp, Log, TEXT("CSV file created successfully at %s"), *Filename);
-    }
-    else
-    {
-        UE_LOG(LogTemp, Error, TEXT("Failed to create CSV file at %s"), *Filename);
-    }
-
-    GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Writing Hand Data File"));
+	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Writing Hand Data File"));
 }
 
 

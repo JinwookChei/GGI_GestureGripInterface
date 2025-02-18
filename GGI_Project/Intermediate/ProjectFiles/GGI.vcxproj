@@ -530,6 +530,9 @@
     <ClCompile Include="..\..\Source\GGI\Private\GGIGameMode.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <ClCompile Include="..\..\Source\GGI\Private\GGIMotionControllerComponent.cpp">
+      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
     <ClCompile Include="..\..\Source\GGI\Private\GGIPawn.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -542,6 +545,7 @@
     <ClInclude Include="..\..\Source\GGI\Public\CommonType.h"/>
     <ClInclude Include="..\..\Source\GGI\Public\GGIGameInstance.h"/>
     <ClInclude Include="..\..\Source\GGI\Public\GGIGameMode.h"/>
+    <ClInclude Include="..\..\Source\GGI\Public\GGIMotionControllerComponent.h"/>
     <ClInclude Include="..\..\Source\GGI\Public\GGIPawn.h"/>
     <ClInclude Include="..\..\Source\GGI\Public\GGIXRHandComponent.h"/>
     <ClInclude Include="..\..\Source\GGI\Public\HandMotionCaptureComponent.h"/>

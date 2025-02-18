@@ -38,8 +38,13 @@ private:
 	int32 TimeStep;
 
 private:	
+	//UPROPERTY()
+	//class AGGIPawn* OwnerPawn;
+
 	UPROPERTY()
-	class AGGIPawn* OwnerPawn;
+	class UGGIMotionControllerComponent* OwnerRightXRController;
+	UPROPERTY()
+	class UGGIMotionControllerComponent* OwnerLeftXRController;
 
 	UPROPERTY()
 	class UGGIXRHandComponent* OwnerXRRightHand;
@@ -53,8 +58,12 @@ private:
 	FVector PreLeftHandLocation;
 
 protected:
+
 	UFUNCTION(BlueprintCallable)
-	void StartWriteCSVData(class UGGIXRHandComponent* _RightHand, class UGGIXRHandComponent* _LeftHand, EHandDataLabel _HandDataLabel);
+	bool Initialize(class UGGIMotionControllerComponent* _RightController, UGGIMotionControllerComponent* _LeftController, class UGGIXRHandComponent* _RightHand, UGGIXRHandComponent* _LeftHand);
+
+	UFUNCTION(BlueprintCallable)
+	void StartWriteCSVData(EHandDataLabel _HandDataLabel);
 
 private:
 	UFUNCTION()
@@ -62,14 +71,6 @@ private:
 
 	UFUNCTION()
 	void ExportHandDatasToCSV(EHandDataLabel _HandDataLabel);
-
-	//UFUNCTION()
-//	void ExportRelativeHandDatasToCSV();
-//
-//	void ExportHandDatasToCSV_Loop();
-//
-//public:
-//	void CalculateRelativeJoint();
 		
 	
 };

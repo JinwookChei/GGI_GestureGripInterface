@@ -3,12 +3,13 @@
 
 #include "GGIPawn.h"
 #include "Camera/CameraComponent.h"
-#include "MotionControllerComponent.h"
+#include "GGIMotionControllerComponent.h"
 #include "OculusXRHandComponent.h"
 #include "OculusXRInputFunctionLibrary.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "GGIXRHandComponent.h"
 #include "CommonType.h"
+#include "HandMotionCaptureComponent.h"
 
 // Sets default values
 AGGIPawn::AGGIPawn()
@@ -30,12 +31,12 @@ AGGIPawn::AGGIPawn()
     //CameraComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f)); // 약간 아래로 향하도록 설정
 
     // 오른손 Motion Controller 생성
-    RightController = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("RightController"));
+    RightController = CreateDefaultSubobject<UGGIMotionControllerComponent>(TEXT("RightController"));
     RightController->SetupAttachment(Root);
     RightController->SetTrackingSource(EControllerHand::Right); // 오른손 설정
 
     // 왼손 Motion Controller 생성
-    LeftController = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("LeftController"));
+    LeftController = CreateDefaultSubobject<UGGIMotionControllerComponent>(TEXT("LeftController"));
     LeftController->SetupAttachment(Root);
     LeftController->SetTrackingSource(EControllerHand::Left); // 왼손 설정
 
@@ -48,6 +49,9 @@ AGGIPawn::AGGIPawn()
     LeftHand = CreateDefaultSubobject<UGGIXRHandComponent>(TEXT("LeftHand"));
     LeftHand->SetupAttachment(LeftController);
     LeftHand->SkeletonType = EOculusXRHandType::HandLeft;
+
+    // 
+    HandMotionCaptureComponent = CreateDefaultSubobject<UHandMotionCaptureComponent>(TEXT("LSTMHandlerComponent"));
 }
 
 // Called when the game starts or when spawned
@@ -55,12 +59,14 @@ void AGGIPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	
+    GetWorld();
 }
 
 // Called every frame
 void AGGIPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
 
 }
 
