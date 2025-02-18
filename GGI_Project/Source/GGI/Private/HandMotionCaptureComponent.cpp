@@ -21,19 +21,6 @@ UHandMotionCaptureComponent::UHandMotionCaptureComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	// ...
-		// ...
-	UGGIGameInstance* GGIGameInstance = Cast<UGGIGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	if (GGIGameInstance)
-	{
-		LearningSampleNum = GGIGameInstance->LearningSampleNum;
-
-		TimeStep = GGIGameInstance->TimeStep;
-	}
-	else
-	{
-		LearningSampleNum = 0;
-		TimeStep = 0;
-	}
 
 	AGGIPawn* Owner = Cast<AGGIPawn>(GetOwner());
 
@@ -57,9 +44,24 @@ void UHandMotionCaptureComponent::BeginPlay()
 
 	// ...
 	TickCount = 9999;
-	LearningSampleCount = 9999;
 
-
+	UGGIGameInstance* GGIGameInstance = Cast<UGGIGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (GGIGameInstance)
+	{
+		SizeOfHandDataSequence = GGIGameInstance->SizeOfHandDataSequence;
+		HandDataExtractIterations = GGIGameInstance->HandDataExtractIterations;
+		LSTMTimeStep = GGIGameInstance->LSTMTimeStep;
+		CurrentExtractionCount = 0;
+		AccumulatedDeltaTime = 0;
+	}
+	else
+	{
+		SizeOfHandDataSequence = 0;
+		HandDataExtractIterations = 0;
+		LSTMTimeStep = 0;
+		CurrentExtractionCount = 0;
+		AccumulatedDeltaTime = 0;
+	}
 }
 
 
@@ -69,26 +71,41 @@ void UHandMotionCaptureComponent::TickComponent(float DeltaTime, ELevelTick Tick
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
-	if (TickCount < 4000)
+	if (TickCount < SizeOfHandDataSequence)
 	{
-		ExportHandDatasToCSV(HandDataLabel);
+		ExportHandDatasToCSV(DeltaTime, HandDataLabel);
 		TickCount++;
 
-		FString Message = FString::Printf(TEXT("Hand Data Recording  -  %d / %d"), TickCount, TimeStep);
+		FString Message = FString::Printf(TEXT("%d th,   Hand Data Recording  -  %d / %d"), CurrentExtractionCount, TickCount, SizeOfHandDataSequence);
 		FColor TextColor = FColor::Red;
 		float DisplayTime = -1.0f;
-
 		GEngine->AddOnScreenDebugMessage(-1, DisplayTime, TextColor, Message);
+	}
+	else if (CurrentExtractionCount < HandDataExtractIterations)
+	{
+		AccumulatedDeltaTime += DeltaTime;
+
+		FString Message = FString::Printf(TEXT("Rest Tick %d / 5"), AccumulatedDeltaTime);
+		FColor TextColor = FColor::Blue;
+		float DisplayTime = -1.0f;
+		GEngine->AddOnScreenDebugMessage(-1, DisplayTime, TextColor, Message);
+
+		if (AccumulatedDeltaTime > 5.0f)
+		{
+			TickCount = 0;
+			CurrentExtractionCount++;
+			AccumulatedDeltaTime = 0;
+		}
 	}
 	else
 	{
 		TickCount = 9999;
+		CurrentExtractionCount = 0;
+		AccumulatedDeltaTime = 0;
 	}
 
 	PreRightHandLocation = OwnerRightXRController->GetRelativeLocation();
 	PreLeftHandLocation = OwnerLeftXRController->GetRelativeLocation();
-	//PreRightHandLocation = OwnerXRRightHand->GetBoneLocation(FName("Wrist Root"), EBoneSpaces::WorldSpace);
-	//PreLeftHandLocation = OwnerXRLeftHand->GetBoneLocation(FName("Wrist Root"), EBoneSpaces::WorldSpace);
 }
 
 bool UHandMotionCaptureComponent::Initialize(UGGIMotionControllerComponent* _RightController, UGGIMotionControllerComponent* _LeftController, UGGIXRHandComponent* _RightHand, UGGIXRHandComponent* _LeftHand)
@@ -100,7 +117,7 @@ bool UHandMotionCaptureComponent::Initialize(UGGIMotionControllerComponent* _Rig
 
 	if (nullptr == _RightController || nullptr == _LeftController)
 	{
-		return false;	
+		return false;
 	}
 
 	OwnerRightXRController = _RightController;
@@ -109,22 +126,21 @@ bool UHandMotionCaptureComponent::Initialize(UGGIMotionControllerComponent* _Rig
 	OwnerXRRightHand = _RightHand;
 	OwnerXRLeftHand = _LeftHand;
 
-	return true;	
+	return true;
 }
 
 void UHandMotionCaptureComponent::StartWriteCSVData(EHandDataLabel _HandDataLabel)
 {
-
 	HandDataLabel = _HandDataLabel;
+	//Filename = FPaths::ProjectDir() + TEXT("JointData.csv");
+	//Filename = UEnum::GetDisplayValueAsText(HandDataLabel).ToString() + TEXT(".csv");
 
 
-	// 메시지 내용, 메시지 키, 출력 시간(초), 텍스트 색상 지정
-	FString Message = TEXT("StartWriteCSVData!!!");
+	FString Message = TEXT("StartWriteCSVData!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 	FColor TextColor = FColor::Green;
-	float DisplayTime = 5.0f; // 5초 동안 표시
-
-	// 메시지 출력 (키는 0부터 9999까지 임의로 설정 가능)
+	float DisplayTime = 3.0f;
 	GEngine->AddOnScreenDebugMessage(-1, DisplayTime, TextColor, Message);
+
 
 	FTimerHandle TimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
@@ -137,9 +153,9 @@ void UHandMotionCaptureComponent::StartWriteCSVData(EHandDataLabel _HandDataLabe
 void UHandMotionCaptureComponent::Initialize_CSVData()
 {
 	TickCount = 0;
-	LearningSampleCount = 0;
+	CurrentExtractionCount = 0;
+	AccumulatedDeltaTime = 0;
 
-	// 저장 폴더 경로 지정 (Saved/HandTrackingData)
 	FString Directory = FPaths::Combine(FPaths::ProjectDir(), TEXT("HandTrackingData"));
 
 	// 디렉터리 생성 (없는 경우)
@@ -147,10 +163,10 @@ void UHandMotionCaptureComponent::Initialize_CSVData()
 	{
 		IFileManager::Get().MakeDirectory(*Directory, true);
 	}
-	
-	// 파일 경로 
-	Filename = FPaths::Combine(Directory, TEXT("JointData.csv"));
 
+	// 파일 경로 
+	Filename = FPaths::Combine(Directory, UEnum::GetDisplayValueAsText(HandDataLabel).ToString() + TEXT(".csv"));
+	//UEnum::GetDisplayValueAsText(HandDataLabel).ToString() + TEXT(".csv");
 
 	CSVData = TEXT("R_WristRoot_Vel_X,R_WristRoot_Vel_Y,R_WristRoot_Vel_Z,");
 	CSVData += TEXT("L_WristRoot_Vel_X,L_WristRoot_Vel_Y,L_WristRoot_Vel_Z,");
@@ -201,20 +217,10 @@ void UHandMotionCaptureComponent::Initialize_CSVData()
 	CSVData += TEXT("L_Pinky3_Relative_Rot_Pitch,L_Pinky3_Relative_Rot_Yaw,L_Pinky3_Relative_Rot_Roll,");
 
 	CSVData += TEXT("Label\n");
-
-
-	// 메시지 내용, 메시지 키, 출력 시간(초), 텍스트 색상 지정
-	FString Message = TEXT("Initialize_CSVData!!!");
-	FColor TextColor = FColor::Green;
-	float DisplayTime = 5.0f; // 5초 동안 표시
-
-	// 메시지 출력 (키는 0부터 9999까지 임의로 설정 가능)
-	GEngine->AddOnScreenDebugMessage(-1, DisplayTime, TextColor, Message);
 }
 
-void UHandMotionCaptureComponent::ExportHandDatasToCSV(EHandDataLabel _HandDataLabel)
+void UHandMotionCaptureComponent::ExportHandDatasToCSV(float _DeltaTime, EHandDataLabel _HandDataLabel)
 {
-
 	for (auto& BoneElem : OwnerXRRightHand->BoneNameMappings)
 	{
 		FVector JointLocation;
@@ -231,19 +237,21 @@ void UHandMotionCaptureComponent::ExportHandDatasToCSV(EHandDataLabel _HandDataL
 		}
 		else if (BoneElem.Key == EOculusXRBone::Wrist_Root)
 		{
-			
+
 			FVector CurrentRightHandLocation = OwnerRightXRController->GetRelativeLocation();
 			FVector RightHandWristRootVelocity = CurrentRightHandLocation - PreRightHandLocation;
-			RightHandWristRootVelocity *= 10;
+			RightHandWristRootVelocity *= _DeltaTime;
+			RightHandWristRootVelocity *= 1000;
 
 			FVector CurrentLeftHandLocation = OwnerLeftXRController->GetRelativeLocation();
 			FVector LeftHandWristRootVelocity = CurrentLeftHandLocation - PreLeftHandLocation;
-			LeftHandWristRootVelocity *= 10;
+			LeftHandWristRootVelocity *= _DeltaTime;
+			LeftHandWristRootVelocity *= 1000;
 
 			CSVData += FString::Printf(TEXT("%f,%f,%f,"), RightHandWristRootVelocity.X, RightHandWristRootVelocity.Y, RightHandWristRootVelocity.Z);
 			CSVData += FString::Printf(TEXT("%f,%f,%f,"), LeftHandWristRootVelocity.X, LeftHandWristRootVelocity.Y, LeftHandWristRootVelocity.Z);
 
-			
+
 			FRotator RightWristRootRelativeRotation = OwnerRightXRController->GetRelativeRotation();
 			FRotator LeftWristRootRelativeRotation = OwnerLeftXRController->GetRelativeRotation();
 			CSVData += FString::Printf(TEXT("%f,%f,%f,"), RightWristRootRelativeRotation.Pitch, RightWristRootRelativeRotation.Yaw, RightWristRootRelativeRotation.Roll);
@@ -261,7 +269,6 @@ void UHandMotionCaptureComponent::ExportHandDatasToCSV(EHandDataLabel _HandDataL
 			CSVData += FString::Printf(TEXT("%f,%f,%f,"), RightBoneRelativeRotator.Pitch, RightBoneRelativeRotator.Yaw, RightBoneRelativeRotator.Roll);
 			CSVData += FString::Printf(TEXT("%f,%f,%f,"), LeftBoneRelativeRotator.Pitch, LeftBoneRelativeRotator.Yaw, LeftBoneRelativeRotator.Roll);
 		}
-		GetWorld();
 	}
 
 	switch (HandDataLabel)
@@ -299,8 +306,7 @@ void UHandMotionCaptureComponent::ExportHandDatasToCSV(EHandDataLabel _HandDataL
 	{
 		UE_LOG(LogTemp, Error, TEXT("Failed to create CSV file at %s"), *Filename);
 	}
-
-	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Writing Hand Data File"));
+	//	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Writing Hand Data File"));
 }
 
 

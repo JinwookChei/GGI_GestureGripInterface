@@ -16,8 +16,10 @@ class GGI_API UGGIGameInstance : public UGameInstance
 	
 	
 public:
-	int32 LearningSampleNum = 20;
+	int32 SizeOfHandDataSequence = 100;
 
-	int32 TimeStep = 80;
+	int32 HandDataExtractIterations = 40;
+
+	int32 LSTMTimeStep = 40;
 	
 };

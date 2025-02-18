@@ -24,6 +24,7 @@ struct Z_Construct_UFunction_UHandMotionCaptureComponent_ExportHandDatasToCSV_St
 {
 	struct HandMotionCaptureComponent_eventExportHandDatasToCSV_Parms
 	{
+		float _DeltaTime;
 		EHandDataLabel _HandDataLabel;
 	};
 #if WITH_METADATA
@@ -31,14 +32,17 @@ struct Z_Construct_UFunction_UHandMotionCaptureComponent_ExportHandDatasToCSV_St
 		{ "ModuleRelativePath", "Public/HandMotionCaptureComponent.h" },
 	};
 #endif // WITH_METADATA
+	static const UECodeGen_Private::FFloatPropertyParams NewProp__DeltaTime;
 	static const UECodeGen_Private::FBytePropertyParams NewProp__HandDataLabel_Underlying;
 	static const UECodeGen_Private::FEnumPropertyParams NewProp__HandDataLabel;
 	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 	static const UECodeGen_Private::FFunctionParams FuncParams;
 };
+const UECodeGen_Private::FFloatPropertyParams Z_Construct_UFunction_UHandMotionCaptureComponent_ExportHandDatasToCSV_Statics::NewProp__DeltaTime = { "_DeltaTime", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(HandMotionCaptureComponent_eventExportHandDatasToCSV_Parms, _DeltaTime), METADATA_PARAMS(0, nullptr) };
 const UECodeGen_Private::FBytePropertyParams Z_Construct_UFunction_UHandMotionCaptureComponent_ExportHandDatasToCSV_Statics::NewProp__HandDataLabel_Underlying = { "UnderlyingType", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Byte, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, nullptr, METADATA_PARAMS(0, nullptr) };
 const UECodeGen_Private::FEnumPropertyParams Z_Construct_UFunction_UHandMotionCaptureComponent_ExportHandDatasToCSV_Statics::NewProp__HandDataLabel = { "_HandDataLabel", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Enum, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(HandMotionCaptureComponent_eventExportHandDatasToCSV_Parms, _HandDataLabel), Z_Construct_UEnum_GGI_EHandDataLabel, METADATA_PARAMS(0, nullptr) }; // 4084854308
 const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UHandMotionCaptureComponent_ExportHandDatasToCSV_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UHandMotionCaptureComponent_ExportHandDatasToCSV_Statics::NewProp__DeltaTime,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UHandMotionCaptureComponent_ExportHandDatasToCSV_Statics::NewProp__HandDataLabel_Underlying,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UHandMotionCaptureComponent_ExportHandDatasToCSV_Statics::NewProp__HandDataLabel,
 };
@@ -56,10 +60,11 @@ UFunction* Z_Construct_UFunction_UHandMotionCaptureComponent_ExportHandDatasToCS
 }
 DEFINE_FUNCTION(UHandMotionCaptureComponent::execExportHandDatasToCSV)
 {
+	P_GET_PROPERTY(FFloatProperty,Z_Param__DeltaTime);
 	P_GET_ENUM(EHandDataLabel,Z_Param__HandDataLabel);
 	P_FINISH;
 	P_NATIVE_BEGIN;
-	P_THIS->ExportHandDatasToCSV(EHandDataLabel(Z_Param__HandDataLabel));
+	P_THIS->ExportHandDatasToCSV(Z_Param__DeltaTime,EHandDataLabel(Z_Param__HandDataLabel));
 	P_NATIVE_END;
 }
 // End Class UHandMotionCaptureComponent Function ExportHandDatasToCSV
@@ -243,14 +248,8 @@ struct Z_Construct_UClass_UHandMotionCaptureComponent_Statics
 		{ "ModuleRelativePath", "Public/HandMotionCaptureComponent.h" },
 	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_OwnerRightXRController_MetaData[] = {
-#if !UE_BUILD_SHIPPING
-		{ "Comment", "//UPROPERTY()\n//class AGGIPawn* OwnerPawn;\n" },
-#endif
 		{ "EditInline", "true" },
 		{ "ModuleRelativePath", "Public/HandMotionCaptureComponent.h" },
-#if !UE_BUILD_SHIPPING
-		{ "ToolTip", "UPROPERTY()\nclass AGGIPawn* OwnerPawn;" },
-#endif
 	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_OwnerLeftXRController_MetaData[] = {
 		{ "EditInline", "true" },
@@ -272,7 +271,7 @@ struct Z_Construct_UClass_UHandMotionCaptureComponent_Statics
 	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 	static UObject* (*const DependentSingletons[])();
 	static constexpr FClassFunctionLinkInfo FuncInfo[] = {
-		{ &Z_Construct_UFunction_UHandMotionCaptureComponent_ExportHandDatasToCSV, "ExportHandDatasToCSV" }, // 220334639
+		{ &Z_Construct_UFunction_UHandMotionCaptureComponent_ExportHandDatasToCSV, "ExportHandDatasToCSV" }, // 3041151082
 		{ &Z_Construct_UFunction_UHandMotionCaptureComponent_Initialize, "Initialize" }, // 596450666
 		{ &Z_Construct_UFunction_UHandMotionCaptureComponent_Initialize_CSVData, "Initialize_CSVData" }, // 1058749404
 		{ &Z_Construct_UFunction_UHandMotionCaptureComponent_StartWriteCSVData, "StartWriteCSVData" }, // 4169692424
@@ -334,10 +333,10 @@ UHandMotionCaptureComponent::~UHandMotionCaptureComponent() {}
 struct Z_CompiledInDeferFile_FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_HandMotionCaptureComponent_h_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_UHandMotionCaptureComponent, UHandMotionCaptureComponent::StaticClass, TEXT("UHandMotionCaptureComponent"), &Z_Registration_Info_UClass_UHandMotionCaptureComponent, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UHandMotionCaptureComponent), 3430287020U) },
+		{ Z_Construct_UClass_UHandMotionCaptureComponent, UHandMotionCaptureComponent::StaticClass, TEXT("UHandMotionCaptureComponent"), &Z_Registration_Info_UClass_UHandMotionCaptureComponent, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UHandMotionCaptureComponent), 141935675U) },
 	};
 };
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_HandMotionCaptureComponent_h_3397895100(TEXT("/Script/GGI"),
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_HandMotionCaptureComponent_h_871062060(TEXT("/Script/GGI"),
 	Z_CompiledInDeferFile_FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_HandMotionCaptureComponent_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_HandMotionCaptureComponent_h_Statics::ClassInfo),
 	nullptr, 0,
 	nullptr, 0);

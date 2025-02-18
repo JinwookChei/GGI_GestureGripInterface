@@ -25,22 +25,23 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
-	FString Filename = FPaths::ProjectDir() + TEXT("JointData.csv");
+	FString Filename;
 
 	FString CSVData;
 
 	int32 TickCount;
 
-	int32 LearningSampleCount;
+	int32 SizeOfHandDataSequence; // 100
 
-	int32 LearningSampleNum;
+	int32 HandDataExtractIterations;  //40
 
-	int32 TimeStep;
+	int32 CurrentExtractionCount;
+
+	int32 LSTMTimeStep;  // 40
+
+	int32 AccumulatedDeltaTime;
 
 private:	
-	//UPROPERTY()
-	//class AGGIPawn* OwnerPawn;
-
 	UPROPERTY()
 	class UGGIMotionControllerComponent* OwnerRightXRController;
 	UPROPERTY()
@@ -70,7 +71,7 @@ private:
 	void Initialize_CSVData();
 
 	UFUNCTION()
-	void ExportHandDatasToCSV(EHandDataLabel _HandDataLabel);
+	void ExportHandDatasToCSV(float _DeltaTime, EHandDataLabel _HandDataLabel);
 		
 	
 };

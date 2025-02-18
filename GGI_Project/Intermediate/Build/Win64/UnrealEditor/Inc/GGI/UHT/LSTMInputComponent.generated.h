@@ -14,7 +14,7 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 #endif
 #define GGI_LSTMInputComponent_generated_h
 
-#define FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_LSTMInputComponent_h_13_INCLASS_NO_PURE_DECLS \
+#define FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_LSTMInputComponent_h_29_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesULSTMInputComponent(); \
 	friend struct Z_Construct_UClass_ULSTMInputComponent_Statics; \
@@ -23,7 +23,7 @@ public: \
 	DECLARE_SERIALIZER(ULSTMInputComponent)
 
 
-#define FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_LSTMInputComponent_h_13_ENHANCED_CONSTRUCTORS \
+#define FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_LSTMInputComponent_h_29_ENHANCED_CONSTRUCTORS \
 private: \
 	/** Private move- and copy-constructors, should never be used */ \
 	ULSTMInputComponent(ULSTMInputComponent&&); \
@@ -35,12 +35,12 @@ public: \
 	NO_API virtual ~ULSTMInputComponent();
 
 
-#define FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_LSTMInputComponent_h_10_PROLOG
-#define FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_LSTMInputComponent_h_13_GENERATED_BODY \
+#define FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_LSTMInputComponent_h_26_PROLOG
+#define FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_LSTMInputComponent_h_29_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_LSTMInputComponent_h_13_INCLASS_NO_PURE_DECLS \
-	FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_LSTMInputComponent_h_13_ENHANCED_CONSTRUCTORS \
+	FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_LSTMInputComponent_h_29_INCLASS_NO_PURE_DECLS \
+	FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_LSTMInputComponent_h_29_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
