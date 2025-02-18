@@ -960,7 +960,9 @@
             "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\unrealeditor\\inc\\ggi\\uht\\ggixrhandcomponent.generated.h",
             "d:\\ggi_gesturegripinterface\\ggi_project\\source\\ggi\\public\\commontype.h",
             "d:\\ggi_gesturegripinterface\\ggi_project\\source\\ggi\\public\\handmotioncapturecomponent.h",
-            "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\unrealeditor\\inc\\ggi\\uht\\handmotioncapturecomponent.generated.h"
+            "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\unrealeditor\\inc\\ggi\\uht\\handmotioncapturecomponent.generated.h",
+            "d:\\ggi_gesturegripinterface\\ggi_project\\source\\ggi\\public\\lstminputcomponent.h",
+            "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\unrealeditor\\inc\\ggi\\uht\\lstminputcomponent.generated.h"
         ],
         "ImportedModules": [],
         "ImportedHeaderUnits": []

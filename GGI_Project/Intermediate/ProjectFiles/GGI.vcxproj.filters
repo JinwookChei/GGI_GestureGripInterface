@@ -69,6 +69,9 @@
     <ClCompile Include="..\..\Source\GGI\Private\HandMotionCaptureComponent.cpp">
       <Filter>Source\GGI\Private</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\GGI\Private\LSTMInputComponent.cpp">
+      <Filter>Source\GGI\Private</Filter>
+    </ClCompile>
     <Filter Include="Source\GGI\Public">
       <UniqueIdentifier>{AEFD6CFE-11F9-3525-A359-8733E4FC4F3D}</UniqueIdentifier>
     </Filter>
@@ -91,6 +94,9 @@
       <Filter>Source\GGI\Public</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\GGI\Public\HandMotionCaptureComponent.h">
+      <Filter>Source\GGI\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\GGI\Public\LSTMInputComponent.h">
       <Filter>Source\GGI\Public</Filter>
     </ClInclude>
   </ItemGroup>

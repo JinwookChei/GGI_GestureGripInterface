@@ -10,6 +10,7 @@
 #include "GGIXRHandComponent.h"
 #include "CommonType.h"
 #include "HandMotionCaptureComponent.h"
+#include "LSTMInputComponent.h"
 
 // Sets default values
 AGGIPawn::AGGIPawn()
@@ -40,18 +41,17 @@ AGGIPawn::AGGIPawn()
     LeftController->SetupAttachment(Root);
     LeftController->SetTrackingSource(EControllerHand::Left); // 왼손 설정
 
-    // 오른손 OculusXR Hand 컴포넌트 생성
     RightHand = CreateDefaultSubobject<UGGIXRHandComponent>(TEXT("RightHand"));
     RightHand->SetupAttachment(RightController);
     RightHand->SkeletonType = EOculusXRHandType::HandRight;
 
-    // 왼손 OculusXR Hand 컴포넌트 생성
     LeftHand = CreateDefaultSubobject<UGGIXRHandComponent>(TEXT("LeftHand"));
     LeftHand->SetupAttachment(LeftController);
     LeftHand->SkeletonType = EOculusXRHandType::HandLeft;
 
-    // 
     HandMotionCaptureComponent = CreateDefaultSubobject<UHandMotionCaptureComponent>(TEXT("LSTMHandlerComponent"));
+
+    LSTMInputComponent = CreateDefaultSubobject<ULSTMInputComponent>(TEXT("LSTMInputComponent"));
 }
 
 // Called when the game starts or when spawned

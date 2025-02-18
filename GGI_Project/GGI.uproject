@@ -50,6 +50,10 @@
 				"Win64",
 				"Android"
 			]
+		},
+		{
+			"Name": "NNERuntimeORT",
+			"Enabled": true
 		}
 	],
 	"TargetPlatforms": [

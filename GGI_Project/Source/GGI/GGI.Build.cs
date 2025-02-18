@@ -8,7 +8,7 @@ public class GGI : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "OculusXRInput", "OculusXRHMD" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "OculusXRInput", "OculusXRHMD", "NNERuntimeORT", "NNE" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

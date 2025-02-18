@@ -319,6 +319,11 @@
 /I "Runtime\D3D12RHI\Public"
 /I "Runtime\OpenGLDrv\Public"
 /I "Runtime\VulkanRHI\Public"
+/I "..\Plugins\NNE\NNERuntimeORT\Intermediate\Build\Win64\UnrealEditor\Inc\NNERuntimeORT\UHT"
+/I "..\Plugins\NNE\NNERuntimeORT\Source"
+/I "..\Intermediate\Build\Win64\UnrealEditor\Inc\NNE\UHT"
+/I "Runtime\NNE\Public"
+/I "Runtime\NNE\Internal"
 /external:W0
 /external:I "ThirdParty\LibTiff\Source\Win64"
 /external:I "ThirdParty\LibTiff\Source"

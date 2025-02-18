@@ -55,6 +55,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	class UHandMotionCaptureComponent* HandMotionCaptureComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	class ULSTMInputComponent* LSTMInputComponent;
+
 public:
 	//UGGIXRHandComponent* GetGGIXRHandComponent(EHandType _HandType);
 };

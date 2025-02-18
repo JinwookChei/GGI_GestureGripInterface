@@ -18,6 +18,7 @@ GGI_API UClass* Z_Construct_UClass_AGGIPawn_NoRegister();
 GGI_API UClass* Z_Construct_UClass_UGGIMotionControllerComponent_NoRegister();
 GGI_API UClass* Z_Construct_UClass_UGGIXRHandComponent_NoRegister();
 GGI_API UClass* Z_Construct_UClass_UHandMotionCaptureComponent_NoRegister();
+GGI_API UClass* Z_Construct_UClass_ULSTMInputComponent_NoRegister();
 UPackage* Z_Construct_UPackage__Script_GGI();
 // End Cross Module References
 
@@ -116,6 +117,12 @@ struct Z_Construct_UClass_AGGIPawn_Statics
 		{ "EditInline", "true" },
 		{ "ModuleRelativePath", "Public/GGIPawn.h" },
 	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_LSTMInputComponent_MetaData[] = {
+		{ "AllowPrivateAccess", "true" },
+		{ "Category", "Components" },
+		{ "EditInline", "true" },
+		{ "ModuleRelativePath", "Public/GGIPawn.h" },
+	};
 #endif // WITH_METADATA
 	static const UECodeGen_Private::FObjectPropertyParams NewProp_Root;
 	static const UECodeGen_Private::FObjectPropertyParams NewProp_CameraComponent;
@@ -124,6 +131,7 @@ struct Z_Construct_UClass_AGGIPawn_Statics
 	static const UECodeGen_Private::FObjectPropertyParams NewProp_RightHand;
 	static const UECodeGen_Private::FObjectPropertyParams NewProp_LeftHand;
 	static const UECodeGen_Private::FObjectPropertyParams NewProp_HandMotionCaptureComponent;
+	static const UECodeGen_Private::FObjectPropertyParams NewProp_LSTMInputComponent;
 	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 	static UObject* (*const DependentSingletons[])();
 	static constexpr FCppClassTypeInfoStatic StaticCppClassTypeInfo = {
@@ -138,6 +146,7 @@ const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AGGIPawn_Stati
 const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AGGIPawn_Statics::NewProp_RightHand = { "RightHand", nullptr, (EPropertyFlags)0x00100000000a001d, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AGGIPawn, RightHand), Z_Construct_UClass_UGGIXRHandComponent_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_RightHand_MetaData), NewProp_RightHand_MetaData) };
 const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AGGIPawn_Statics::NewProp_LeftHand = { "LeftHand", nullptr, (EPropertyFlags)0x00100000000a001d, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AGGIPawn, LeftHand), Z_Construct_UClass_UGGIXRHandComponent_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_LeftHand_MetaData), NewProp_LeftHand_MetaData) };
 const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AGGIPawn_Statics::NewProp_HandMotionCaptureComponent = { "HandMotionCaptureComponent", nullptr, (EPropertyFlags)0x00100000000a001d, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AGGIPawn, HandMotionCaptureComponent), Z_Construct_UClass_UHandMotionCaptureComponent_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_HandMotionCaptureComponent_MetaData), NewProp_HandMotionCaptureComponent_MetaData) };
+const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AGGIPawn_Statics::NewProp_LSTMInputComponent = { "LSTMInputComponent", nullptr, (EPropertyFlags)0x00100000000a001d, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AGGIPawn, LSTMInputComponent), Z_Construct_UClass_ULSTMInputComponent_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_LSTMInputComponent_MetaData), NewProp_LSTMInputComponent_MetaData) };
 const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_AGGIPawn_Statics::PropPointers[] = {
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AGGIPawn_Statics::NewProp_Root,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AGGIPawn_Statics::NewProp_CameraComponent,
@@ -146,6 +155,7 @@ const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_AGGIPawn_
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AGGIPawn_Statics::NewProp_RightHand,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AGGIPawn_Statics::NewProp_LeftHand,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AGGIPawn_Statics::NewProp_HandMotionCaptureComponent,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AGGIPawn_Statics::NewProp_LSTMInputComponent,
 };
 static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_AGGIPawn_Statics::PropPointers) < 2048);
 UObject* (*const Z_Construct_UClass_AGGIPawn_Statics::DependentSingletons[])() = {
@@ -188,10 +198,10 @@ AGGIPawn::~AGGIPawn() {}
 struct Z_CompiledInDeferFile_FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_GGIPawn_h_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_AGGIPawn, AGGIPawn::StaticClass, TEXT("AGGIPawn"), &Z_Registration_Info_UClass_AGGIPawn, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AGGIPawn), 1996424723U) },
+		{ Z_Construct_UClass_AGGIPawn, AGGIPawn::StaticClass, TEXT("AGGIPawn"), &Z_Registration_Info_UClass_AGGIPawn, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AGGIPawn), 3104771189U) },
 	};
 };
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_GGIPawn_h_146459863(TEXT("/Script/GGI"),
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_GGIPawn_h_3608658142(TEXT("/Script/GGI"),
 	Z_CompiledInDeferFile_FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_GGIPawn_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_GGIPawn_h_Statics::ClassInfo),
 	nullptr, 0,
 	nullptr, 0);
