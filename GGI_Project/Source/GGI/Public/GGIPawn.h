@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "GGIQueue.h"
 #include "GGIPawn.generated.h"
 
 
@@ -72,5 +73,11 @@ private:
 	void UpdateHandMotionSequence(float DeltaTime);
 
 	void AnalyzeHandMotionSequenceInLSTM();
+
+
+	//Test
+	GGIQueue HandMotionSequenceTest;
+
+	int TickCount;
 
 };

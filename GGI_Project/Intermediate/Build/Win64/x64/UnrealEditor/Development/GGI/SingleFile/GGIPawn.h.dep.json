@@ -638,6 +638,7 @@
             "d:\\unrealengine\\engine\\source\\runtime\\engine\\classes\\ai\\navigation\\navagentinterface.h",
             "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\navagentinterface.generated.h",
             "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\pawn.generated.h",
+            "d:\\ggi_gesturegripinterface\\ggi_project\\source\\ggi\\public\\ggiqueue.h",
             "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\unrealeditor\\inc\\ggi\\uht\\ggipawn.generated.h"
         ],
         "ImportedModules": [],

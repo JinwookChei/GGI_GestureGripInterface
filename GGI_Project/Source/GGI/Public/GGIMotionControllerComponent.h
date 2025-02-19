@@ -15,7 +15,5 @@ class GGI_API UGGIMotionControllerComponent : public UMotionControllerComponent
 	GENERATED_BODY()
 	
 public:
-
-
 	
 };

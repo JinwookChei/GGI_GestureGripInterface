@@ -7,6 +7,7 @@
         "Includes": [
             "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\ggi\\definitions.ggi.h",
             "d:\\ggi_gesturegripinterface\\ggi_project\\source\\ggi\\public\\ggipawn.h",
+            "d:\\ggi_gesturegripinterface\\ggi_project\\source\\ggi\\public\\ggiqueue.h",
             "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\unrealeditor\\inc\\ggi\\uht\\ggipawn.generated.h"
         ],
         "ImportedModules": [],

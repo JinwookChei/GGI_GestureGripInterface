@@ -63,12 +63,16 @@ void AGGIPawn::BeginPlay()
 	}
 
 	SequenceCount = 0;
+
+	TickCount = 0;
 }
 
 
 void AGGIPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	TickCount++;
 
 	UpdateHandMotionSequence(DeltaTime);
 
@@ -152,6 +156,7 @@ void AGGIPawn::UpdateHandMotionSequence(float DeltaTime)
 	}
 
 	HandMotionSequence.Enqueue(HandMotionDataArray);
+	
 	SequenceCount++;
 
 	if (SequenceCount > GGIGameInstance->LSTMTimeStep)
@@ -164,6 +169,56 @@ void AGGIPawn::UpdateHandMotionSequence(float DeltaTime)
 	{ 
 		AnalyzeHandMotionSequenceInLSTM();
 	}
+
+	
+	// Test
+ 	HandMotionSequenceTest.Enqueue(HandMotionDataArray);
+	if (HandMotionSequenceTest.GetCount() > GGIGameInstance->LSTMTimeStep)
+	{
+		HandMotionSequenceTest.Dequeue();
+	}
+
+	if (HandMotionSequenceTest.GetCount() == GGIGameInstance->LSTMTimeStep)
+	{
+		//
+	}
+	
+	TArray<float> TempArray;
+	HandMotionSequenceTest.GetAllData(TempArray);
+
+	TArray<float> ResultArray;
+	TArray<float> TempArrayA;
+
+	if (SequenceCount == GGIGameInstance->LSTMTimeStep)
+	{
+		//TArray<float> InputSequence;
+		for (int i = 0; i < GGIGameInstance->LSTMTimeStep; i++)
+		{
+			//OwnerPawn->JointSequenceData.Dequeue(TempArray);
+			HandMotionSequence.Dequeue(TempArrayA);
+
+			for (double Value : TempArrayA)
+			{
+				//ResultArray.Add(static_cast<float>(Value)); // double을 float로 변환하여 추가
+				ResultArray.Add(Value);
+			}
+			HandMotionSequence.Enqueue(TempArrayA);
+		}
+	}
+
+
+	if(TickCount == 1000)
+	{
+		UE_LOG(LogTemp, Display, TEXT("HandMotionSequence Start"));
+		for (int i = 0; i < ResultArray.Num(); ++i)
+		{	
+			UE_LOG(LogTemp, Display, TEXT("%s"), ResultArray[i] == TempArray[i] ? TEXT("TRUE") : TEXT("FALSE"));
+		}
+		UE_LOG(LogTemp, Display, TEXT("HandMotionSequence End"));
+
+		TickCount = 0;
+	}
+
 }
 
 void AGGIPawn::AnalyzeHandMotionSequenceInLSTM()

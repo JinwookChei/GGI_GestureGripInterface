@@ -146,7 +146,7 @@ void ULSTMInputComponent::ExecuteNNETickInference(TQueue<TArray<float>>& InJoint
 			// Fill in new data into ModelHelper->InputData here
 
 			// TODO : ++
-			TArray<float> ResultArray;
+			/*TArray<float> ResultArray;
 			TArray<float> TempArray;
 
 			for (int i = 0; i < GGIGameInstance->LSTMTimeStep; i++)
@@ -161,7 +161,7 @@ void ULSTMInputComponent::ExecuteNNETickInference(TQueue<TArray<float>>& InJoint
 
 			ModelHelper->InputData = ResultArray;
 
-			UE_LOG(LogTemp, Display, TEXT("ModelHelper->InputData.Num() : %d"), ModelHelper->InputData.Num());
+			UE_LOG(LogTemp, Display, TEXT("ModelHelper->InputData.Num() : %d"), ModelHelper->InputData.Num());*/
 
 
 			//float MaxOutput = 0;

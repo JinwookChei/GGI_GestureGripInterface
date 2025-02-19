@@ -63,6 +63,9 @@
     <ClCompile Include="..\..\Source\GGI\Private\GGIPawn.cpp">
       <Filter>Source\GGI\Private</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\GGI\Private\GGIQueue.cpp">
+      <Filter>Source\GGI\Private</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\GGI\Private\GGIXRHandComponent.cpp">
       <Filter>Source\GGI\Private</Filter>
     </ClCompile>
@@ -88,6 +91,9 @@
       <Filter>Source\GGI\Public</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\GGI\Public\GGIPawn.h">
+      <Filter>Source\GGI\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\GGI\Public\GGIQueue.h">
       <Filter>Source\GGI\Public</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\GGI\Public\GGIXRHandComponent.h">

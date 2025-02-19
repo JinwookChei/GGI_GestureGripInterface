@@ -73,5 +73,4 @@ private:
 	UFUNCTION()
 	void ExportHandDatasToCSV(float DeltaTime);
 		
-	
 };
