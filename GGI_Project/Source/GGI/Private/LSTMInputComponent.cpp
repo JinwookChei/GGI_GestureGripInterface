@@ -135,7 +135,7 @@ void ULSTMInputComponent::Initialize()
 	}
 }
 
-void ULSTMInputComponent::ExecuteNNETickInference(const TQueue<TArray<float>>& InJointSequenceData) const
+void ULSTMInputComponent::ExecuteNNETickInference(TQueue<TArray<float>>& InJointSequenceData) const
 {
 	if (ModelHelper.IsValid())
 	{
@@ -146,31 +146,22 @@ void ULSTMInputComponent::ExecuteNNETickInference(const TQueue<TArray<float>>& I
 			// Fill in new data into ModelHelper->InputData here
 
 			// TODO : ++
-			//TArray<float> ResultArray;
-			//TArray<float> TempArray;
+			TArray<float> ResultArray;
+			TArray<float> TempArray;
 
-			//if (OwnerPawn->QueueCount == GGGGameInstance->TimeStep)
-			//{
-			//	//TArray<float> InputSequence;
-			//	for (int i = 0; i < GGGGameInstance->TimeStep; i++)
-			//	{
-			//		//OwnerPawn->JointSequenceData.Dequeue(TempArray);
-			//		_JointSequenceData.Dequeue(TempArray);
+			for (int i = 0; i < GGIGameInstance->LSTMTimeStep; i++)
+			{
+				InJointSequenceData.Dequeue(TempArray);
 
-			//		for (double Value : TempArray)
-			//		{
-			//			//ResultArray.Add(static_cast<float>(Value)); // double을 float로 변환하여 추가
-			//			ResultArray.Add(Value);
-			//		}
+				for (float Value : TempArray)
+				{
+					ResultArray.Add(Value);
+				}
+			}
 
-			//		_JointSequenceData.Enqueue(TempArray);
-			//	}
-			//}
+			ModelHelper->InputData = ResultArray;
 
-			//ModelHelper->InputData = ResultArray;
-
-
-			//UE_LOG(LogTemp, Display, TEXT("ModelHelper->InputData.Num() : %d"), ModelHelper->InputData.Num());
+			UE_LOG(LogTemp, Display, TEXT("ModelHelper->InputData.Num() : %d"), ModelHelper->InputData.Num());
 
 
 			//float MaxOutput = 0;

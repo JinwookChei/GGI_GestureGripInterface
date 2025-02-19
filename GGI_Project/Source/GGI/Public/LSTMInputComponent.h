@@ -59,7 +59,7 @@ private:
 
 public:
 
-	void ExecuteNNETickInference(const TQueue<TArray<float>>& InJointSequenceData) const;
+	void ExecuteNNETickInference(TQueue<TArray<float>>& InJointSequenceData) const;
 		
 	
 };
