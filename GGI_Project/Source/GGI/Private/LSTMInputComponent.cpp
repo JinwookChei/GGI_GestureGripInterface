@@ -135,7 +135,7 @@ void ULSTMInputComponent::Initialize()
 	}
 }
 
-void ULSTMInputComponent::ExecuteNNETickInference(TQueue<TArray<float>>& _JointSequenceData)
+void ULSTMInputComponent::ExecuteNNETickInference(const TQueue<TArray<float>>& InJointSequenceData) const
 {
 	if (ModelHelper.IsValid())
 	{
@@ -245,7 +245,6 @@ void ULSTMInputComponent::ExecuteNNETickInference(TQueue<TArray<float>>& _JointS
 			//	TextColor = FColor::Black;
 			//}
 			//
-
 
 
 

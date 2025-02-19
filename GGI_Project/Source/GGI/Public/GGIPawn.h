@@ -38,19 +38,19 @@ public:
 
 	// Motion Controller - ¿À¸¥¼Õ
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	class UGGIMotionControllerComponent* RightController;
+	class UGGIMotionControllerComponent* RightXRController;
 
 	// Motion Controller - ¿Þ¼Õ
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	class UGGIMotionControllerComponent* LeftController;
+	class UGGIMotionControllerComponent* LeftXRController;
 
 	// OculusXR Hand - ¿À¸¥¼Õ
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	class UGGIXRHandComponent* RightHand;
+	class UGGIXRHandComponent* RightXRHand;
 
 	// OculusXR Hand - ¿Þ¼Õ
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	class UGGIXRHandComponent* LeftHand;
+	class UGGIXRHandComponent* LeftXRHand;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	class UHandMotionCaptureComponent* HandMotionCaptureComponent;
@@ -58,6 +58,19 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	class ULSTMInputComponent* LSTMInputComponent;
 
-public:
-	//UGGIXRHandComponent* GetGGIXRHandComponent(EHandType _HandType);
+private:
+	class UGGIGameInstance* GGIGameInstance;
+
+	FVector PreRightXRHandLocation;
+
+	FVector PreLeftXRHandLocation;
+
+	TQueue<TArray<float>> HandMotionSequence;
+
+	int32 SequenceCount;
+
+	void UpdateHandMotionSequence(float DeltaTime);
+
+	void AnalyzeHandMotionSequenceInLSTM();
+
 };

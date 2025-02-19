@@ -11,19 +11,19 @@
 #include "CommonType.h"
 #include "HandMotionCaptureComponent.h"
 #include "LSTMInputComponent.h"
+#include "GGIGameInstance.h"
+#include "Kismet/GameplayStatics.h"
+#include "Misc/CoreMiscDefines.h"
+
 
 // Sets default values
 AGGIPawn::AGGIPawn()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-
-    // 루트 컴포넌트 생성
     Root = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
     RootComponent = Root;
 
-    // 카메라 컴포넌트 생성 및 부착
     CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
     CameraComponent->SetupAttachment(Root);
 
@@ -31,61 +31,143 @@ AGGIPawn::AGGIPawn()
     //CameraComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f)); // 예: Pawn의 머리 높이
     //CameraComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f)); // 약간 아래로 향하도록 설정
 
-    // 오른손 Motion Controller 생성
-    RightController = CreateDefaultSubobject<UGGIMotionControllerComponent>(TEXT("RightController"));
-    RightController->SetupAttachment(Root);
-    RightController->SetTrackingSource(EControllerHand::Right); // 오른손 설정
+    RightXRController = CreateDefaultSubobject<UGGIMotionControllerComponent>(TEXT("RightController"));
+    RightXRController->SetupAttachment(Root);
+    RightXRController->SetTrackingSource(EControllerHand::Right); // 오른손 설정
 
-    // 왼손 Motion Controller 생성
-    LeftController = CreateDefaultSubobject<UGGIMotionControllerComponent>(TEXT("LeftController"));
-    LeftController->SetupAttachment(Root);
-    LeftController->SetTrackingSource(EControllerHand::Left); // 왼손 설정
+    LeftXRController = CreateDefaultSubobject<UGGIMotionControllerComponent>(TEXT("LeftController"));
+    LeftXRController->SetupAttachment(Root);
+    LeftXRController->SetTrackingSource(EControllerHand::Left); // 왼손 설정
 
-    RightHand = CreateDefaultSubobject<UGGIXRHandComponent>(TEXT("RightHand"));
-    RightHand->SetupAttachment(RightController);
-    RightHand->SkeletonType = EOculusXRHandType::HandRight;
+    RightXRHand = CreateDefaultSubobject<UGGIXRHandComponent>(TEXT("RightHand"));
+    RightXRHand->SetupAttachment(RightXRController);
+    RightXRHand->SkeletonType = EOculusXRHandType::HandRight;
 
-    LeftHand = CreateDefaultSubobject<UGGIXRHandComponent>(TEXT("LeftHand"));
-    LeftHand->SetupAttachment(LeftController);
-    LeftHand->SkeletonType = EOculusXRHandType::HandLeft;
+    LeftXRHand = CreateDefaultSubobject<UGGIXRHandComponent>(TEXT("LeftHand"));
+    LeftXRHand->SetupAttachment(LeftXRController);
+    LeftXRHand->SkeletonType = EOculusXRHandType::HandLeft;
 
     HandMotionCaptureComponent = CreateDefaultSubobject<UHandMotionCaptureComponent>(TEXT("LSTMHandlerComponent"));
 
     LSTMInputComponent = CreateDefaultSubobject<ULSTMInputComponent>(TEXT("LSTMInputComponent"));
 }
 
-// Called when the game starts or when spawned
 void AGGIPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	GGIGameInstance = Cast<UGGIGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (nullptr == GGIGameInstance)
+	{
+		UE_DEBUG_BREAK();
+	}
+
+	SequenceCount = 0;
 }
 
-// Called every frame
+
 void AGGIPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	UpdateHandMotionSequence(DeltaTime);
 
+	PreRightXRHandLocation = RightXRController->GetRelativeLocation();
+	PreLeftXRHandLocation = LeftXRController->GetRelativeLocation();
 }
 
-// Called to bind functionality to input
+
 void AGGIPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
-//UGGIXRHandComponent* AGGIPawn::GetGGIXRHandComponent(EHandType _HandType)
-//{
-//    if (_HandType == EHandType::LeftHand)
-//    {
-//        return LeftHand;
-//    }
-//    else if (_HandType == EHandType::RightHand)
-//    {
-//        return >RightHand;
-//    }
-//    return nullptr;
-//}
+void AGGIPawn::UpdateHandMotionSequence(float DeltaTime)
+{
+	TArray<float> HandMotionDataArray;
+	
+	for (auto& BoneElem : RightXRHand->BoneNameMappings)
+	{
+		FVector JointLocation;
+		FRotator JointRotation;
+
+		if (BoneElem.Key == EOculusXRBone::Forearm_Stub ||
+			BoneElem.Key == EOculusXRBone::Thumb_Tip ||
+			BoneElem.Key == EOculusXRBone::Index_Tip ||
+			BoneElem.Key == EOculusXRBone::Middle_Tip ||
+			BoneElem.Key == EOculusXRBone::Ring_Tip ||
+			BoneElem.Key == EOculusXRBone::Pinky_Tip)
+		{
+		}
+		else if (BoneElem.Key == EOculusXRBone::Wrist_Root)
+		{
+
+			FVector CurrentRightHandLocation = RightXRController->GetRelativeLocation();
+			FVector RightHandWristRootVelocity = CurrentRightHandLocation - PreRightXRHandLocation;
+			RightHandWristRootVelocity *= DeltaTime;
+			RightHandWristRootVelocity *= 1000;
+
+			FVector CurrentLeftHandLocation = LeftXRController->GetRelativeLocation();
+			FVector LeftHandWristRootVelocity = CurrentLeftHandLocation - PreLeftXRHandLocation;
+			LeftHandWristRootVelocity *= DeltaTime;
+			LeftHandWristRootVelocity *= 1000;
+			
+			
+			HandMotionDataArray.Push(RightHandWristRootVelocity.X);
+			HandMotionDataArray.Push(RightHandWristRootVelocity.Y);
+			HandMotionDataArray.Push(RightHandWristRootVelocity.Z);
+
+			HandMotionDataArray.Push(LeftHandWristRootVelocity.X);
+			HandMotionDataArray.Push(LeftHandWristRootVelocity.Y);
+			HandMotionDataArray.Push(LeftHandWristRootVelocity.Z);
+
+			FRotator RightWristRootRelativeRotation = RightXRController->GetRelativeRotation();
+			FRotator LeftWristRootRelativeRotation = LeftXRController->GetRelativeRotation();
+
+			HandMotionDataArray.Push(RightWristRootRelativeRotation.Pitch);
+			HandMotionDataArray.Push(RightWristRootRelativeRotation.Yaw);
+			HandMotionDataArray.Push(RightWristRootRelativeRotation.Roll);
+
+			HandMotionDataArray.Push(LeftWristRootRelativeRotation.Pitch);
+			HandMotionDataArray.Push(LeftWristRootRelativeRotation.Yaw);
+			HandMotionDataArray.Push(LeftWristRootRelativeRotation.Roll);
+		}
+		else
+		{
+			FQuat RightBoneRelativeQuat = UOculusXRInputFunctionLibrary::GetBoneRotation(EOculusXRHandType::HandRight, BoneElem.Key, 0);
+			FQuat LeftBoneRelativeQuat = UOculusXRInputFunctionLibrary::GetBoneRotation(EOculusXRHandType::HandLeft, BoneElem.Key, 0);
+
+			FRotator RightBoneRelativeRotator = RightBoneRelativeQuat.Rotator();
+			FRotator LeftBoneRelativeRotator = LeftBoneRelativeQuat.Rotator();
+
+
+			HandMotionDataArray.Push(RightBoneRelativeRotator.Pitch);
+			HandMotionDataArray.Push(RightBoneRelativeRotator.Yaw);
+			HandMotionDataArray.Push(RightBoneRelativeRotator.Roll);
+			
+			HandMotionDataArray.Push(LeftBoneRelativeRotator.Pitch);
+			HandMotionDataArray.Push(LeftBoneRelativeRotator.Yaw);
+			HandMotionDataArray.Push(LeftBoneRelativeRotator.Roll);
+		}
+	}
+
+	HandMotionSequence.Enqueue(HandMotionDataArray);
+	SequenceCount++;
+
+	if (SequenceCount > GGIGameInstance->LSTMTimeStep)
+	{
+		HandMotionSequence.Pop();
+		SequenceCount--;
+	}
+
+	if(SequenceCount == GGIGameInstance->LSTMTimeStep)
+	{ 
+		AnalyzeHandMotionSequenceInLSTM();
+	}
+}
+
+void AGGIPawn::AnalyzeHandMotionSequenceInLSTM()
+{
+	LSTMInputComponent->ExecuteNNETickInference(HandMotionSequence);
+}
 

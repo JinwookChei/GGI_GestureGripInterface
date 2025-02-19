@@ -16,11 +16,7 @@
 // Sets default values for this component's properties
 UHandMotionCaptureComponent::UHandMotionCaptureComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 
 	AGGIPawn* Owner = Cast<AGGIPawn>(GetOwner());
 
@@ -63,8 +59,6 @@ void UHandMotionCaptureComponent::BeginPlay()
 	// ...
 	TickCount = 9999;
 	CurrentExtractionCount = 9999;
-
-
 }
 
 
@@ -76,7 +70,7 @@ void UHandMotionCaptureComponent::TickComponent(float DeltaTime, ELevelTick Tick
 	// ...
 	if (TickCount < SizeOfHandDataSequence)
 	{
-		ExportHandDatasToCSV(DeltaTime, HandDataLabel);
+		ExportHandDatasToCSV(DeltaTime);
 		TickCount++;
 
 		FString Message = FString::Printf(TEXT("%d th,   Hand Data Recording  -  %d / %d"), CurrentExtractionCount, TickCount, SizeOfHandDataSequence);
@@ -111,33 +105,30 @@ void UHandMotionCaptureComponent::TickComponent(float DeltaTime, ELevelTick Tick
 	PreLeftHandLocation = OwnerLeftXRController->GetRelativeLocation();
 }
 
-bool UHandMotionCaptureComponent::Initialize(UGGIMotionControllerComponent* _RightController, UGGIMotionControllerComponent* _LeftController, UGGIXRHandComponent* _RightHand, UGGIXRHandComponent* _LeftHand)
+bool UHandMotionCaptureComponent::Initialize(UGGIMotionControllerComponent* InRightXRController, UGGIMotionControllerComponent* InLeftXRController, UGGIXRHandComponent* InRightXRHand, UGGIXRHandComponent* InLeftXRHand)
 {
-	if (nullptr == _RightHand || nullptr == _LeftHand)
+	if (nullptr == InRightXRHand || nullptr == InLeftXRHand)
 	{
 		return false;
 	}
 
-	if (nullptr == _RightController || nullptr == _LeftController)
+	if (nullptr == InRightXRController || nullptr == InLeftXRController)
 	{
 		return false;
 	}
 
-	OwnerRightXRController = _RightController;
-	OwnerLeftXRController = _LeftController;
+	OwnerRightXRController = InRightXRController;
+	OwnerLeftXRController = InLeftXRController;
 
-	OwnerXRRightHand = _RightHand;
-	OwnerXRLeftHand = _LeftHand;
+	OwnerXRRightHand = InRightXRHand;
+	OwnerXRLeftHand = InLeftXRHand;
 
 	return true;
 }
 
-void UHandMotionCaptureComponent::StartWriteCSVData(EHandDataLabel _HandDataLabel)
+void UHandMotionCaptureComponent::StartWriteCSVData(EHandDataLabel InHandDataLabel)
 {
-	HandDataLabel = _HandDataLabel;
-	//Filename = FPaths::ProjectDir() + TEXT("JointData.csv");
-	//Filename = UEnum::GetDisplayValueAsText(HandDataLabel).ToString() + TEXT(".csv");
-
+	HandDataLabel = InHandDataLabel;
 
 	FString Message = TEXT("StartWriteCSVData!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 	FColor TextColor = FColor::Green;
@@ -169,7 +160,6 @@ void UHandMotionCaptureComponent::Initialize_CSVData()
 
 	// 파일 경로 
 	Filename = FPaths::Combine(Directory, UEnum::GetDisplayValueAsText(HandDataLabel).ToString() + TEXT(".csv"));
-	//UEnum::GetDisplayValueAsText(HandDataLabel).ToString() + TEXT(".csv");
 
 	CSVData = TEXT("R_WristRoot_Vel_X,R_WristRoot_Vel_Y,R_WristRoot_Vel_Z,");
 	CSVData += TEXT("L_WristRoot_Vel_X,L_WristRoot_Vel_Y,L_WristRoot_Vel_Z,");
@@ -222,7 +212,7 @@ void UHandMotionCaptureComponent::Initialize_CSVData()
 	CSVData += TEXT("Label\n");
 }
 
-void UHandMotionCaptureComponent::ExportHandDatasToCSV(float _DeltaTime, EHandDataLabel _HandDataLabel)
+void UHandMotionCaptureComponent::ExportHandDatasToCSV(float DeltaTime)
 {
 	for (auto& BoneElem : OwnerXRRightHand->BoneNameMappings)
 	{
@@ -243,12 +233,12 @@ void UHandMotionCaptureComponent::ExportHandDatasToCSV(float _DeltaTime, EHandDa
 
 			FVector CurrentRightHandLocation = OwnerRightXRController->GetRelativeLocation();
 			FVector RightHandWristRootVelocity = CurrentRightHandLocation - PreRightHandLocation;
-			RightHandWristRootVelocity *= _DeltaTime;
+			RightHandWristRootVelocity *= DeltaTime;
 			RightHandWristRootVelocity *= 1000;
 
 			FVector CurrentLeftHandLocation = OwnerLeftXRController->GetRelativeLocation();
 			FVector LeftHandWristRootVelocity = CurrentLeftHandLocation - PreLeftHandLocation;
-			LeftHandWristRootVelocity *= _DeltaTime;
+			LeftHandWristRootVelocity *= DeltaTime;
 			LeftHandWristRootVelocity *= 1000;
 
 			CSVData += FString::Printf(TEXT("%f,%f,%f,"), RightHandWristRootVelocity.X, RightHandWristRootVelocity.Y, RightHandWristRootVelocity.Z);
@@ -309,7 +299,6 @@ void UHandMotionCaptureComponent::ExportHandDatasToCSV(float _DeltaTime, EHandDa
 	{
 		UE_LOG(LogTemp, Error, TEXT("Failed to create CSV file at %s"), *Filename);
 	}
-	//	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Writing Hand Data File"));
 }
 
 

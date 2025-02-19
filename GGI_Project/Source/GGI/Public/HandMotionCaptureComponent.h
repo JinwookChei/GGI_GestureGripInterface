@@ -61,17 +61,17 @@ private:
 protected:
 
 	UFUNCTION(BlueprintCallable)
-	bool Initialize(class UGGIMotionControllerComponent* _RightController, UGGIMotionControllerComponent* _LeftController, class UGGIXRHandComponent* _RightHand, UGGIXRHandComponent* _LeftHand);
+	bool Initialize(class UGGIMotionControllerComponent* InRightXRController, UGGIMotionControllerComponent* InLeftXRController, class UGGIXRHandComponent* InRightXRHand, UGGIXRHandComponent* InLeftXRHand);
 
 	UFUNCTION(BlueprintCallable)
-	void StartWriteCSVData(EHandDataLabel _HandDataLabel);
+	void StartWriteCSVData(EHandDataLabel InHandDataLabel);
 
 private:
 	UFUNCTION()
 	void Initialize_CSVData();
 
 	UFUNCTION()
-	void ExportHandDatasToCSV(float _DeltaTime, EHandDataLabel _HandDataLabel);
+	void ExportHandDatasToCSV(float DeltaTime);
 		
 	
 };
