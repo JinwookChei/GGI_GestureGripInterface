@@ -34,16 +34,6 @@ UHandMotionCaptureComponent::UHandMotionCaptureComponent()
 		Initialize(_OwnerRightXRController, _OwnerLeftXRController, _OwnerXRRightHand, _OwnerXRLeftHand);
 	}
 
-}
-
-
-// Called when the game starts
-void UHandMotionCaptureComponent::BeginPlay()
-{
-	Super::BeginPlay();
-
-	// ...
-	TickCount = 9999;
 
 	UGGIGameInstance* GGIGameInstance = Cast<UGGIGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (GGIGameInstance)
@@ -65,6 +55,19 @@ void UHandMotionCaptureComponent::BeginPlay()
 }
 
 
+// Called when the game starts
+void UHandMotionCaptureComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// ...
+	TickCount = 9999;
+	CurrentExtractionCount = 9999;
+
+
+}
+
+
 // Called every frame
 void UHandMotionCaptureComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -81,7 +84,7 @@ void UHandMotionCaptureComponent::TickComponent(float DeltaTime, ELevelTick Tick
 		float DisplayTime = -1.0f;
 		GEngine->AddOnScreenDebugMessage(-1, DisplayTime, TextColor, Message);
 	}
-	else if (CurrentExtractionCount < HandDataExtractIterations)
+	else if (CurrentExtractionCount < HandDataExtractIterations-1)
 	{
 		AccumulatedDeltaTime += DeltaTime;
 
@@ -90,7 +93,7 @@ void UHandMotionCaptureComponent::TickComponent(float DeltaTime, ELevelTick Tick
 		float DisplayTime = -1.0f;
 		GEngine->AddOnScreenDebugMessage(-1, DisplayTime, TextColor, Message);
 
-		if (AccumulatedDeltaTime > 5.0f)
+		if (AccumulatedDeltaTime > 4.0f)
 		{
 			TickCount = 0;
 			CurrentExtractionCount++;
@@ -100,7 +103,7 @@ void UHandMotionCaptureComponent::TickComponent(float DeltaTime, ELevelTick Tick
 	else
 	{
 		TickCount = 9999;
-		CurrentExtractionCount = 0;
+		CurrentExtractionCount = 9999;
 		AccumulatedDeltaTime = 0;
 	}
 

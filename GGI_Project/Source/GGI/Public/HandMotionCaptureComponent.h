@@ -39,7 +39,7 @@ private:
 
 	int32 LSTMTimeStep;  // 40
 
-	int32 AccumulatedDeltaTime;
+	float AccumulatedDeltaTime;
 
 private:	
 	UPROPERTY()

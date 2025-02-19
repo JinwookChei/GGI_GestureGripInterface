@@ -59,7 +59,6 @@ void AGGIPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	
-    GetWorld();
 }
 
 // Called every frame

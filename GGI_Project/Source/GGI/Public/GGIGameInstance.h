@@ -18,8 +18,8 @@ class GGI_API UGGIGameInstance : public UGameInstance
 public:
 	int32 SizeOfHandDataSequence = 100;
 
-	int32 HandDataExtractIterations = 40;
+	int32 HandDataExtractIterations = 5; //70
 
-	int32 LSTMTimeStep = 40;
+	int32 LSTMTimeStep = 80;
 	
 };
