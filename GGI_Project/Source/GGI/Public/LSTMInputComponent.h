@@ -54,7 +54,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UNNEModelData> NNEModelData;
 
-	void ExecuteNNETickInference(const TArray<float>& InLSTMInputArray);
+	void ExecuteNNETickInference(const TArray<float>& InLSTMInputArray, int32& InWeaponIndex);
 
 private:
 	float Threshold;

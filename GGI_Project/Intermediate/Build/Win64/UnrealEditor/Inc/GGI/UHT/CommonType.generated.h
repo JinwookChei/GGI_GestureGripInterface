@@ -28,6 +28,7 @@ template<> struct TIsUEnumClass<EHandType> { enum { Value = true }; };
 template<> GGI_API UEnum* StaticEnum<EHandType>();
 
 #define FOREACH_ENUM_EHANDDATALABEL(op) \
+	op(EHandDataLabel::Idle) \
 	op(EHandDataLabel::Bow) \
 	op(EHandDataLabel::Sword) \
 	op(EHandDataLabel::Pistol) \

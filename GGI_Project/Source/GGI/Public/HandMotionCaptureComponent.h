@@ -31,13 +31,15 @@ private:
 
 	int32 TickCount;
 
-	int32 SizeOfHandDataSequence; // 100
+	int32 SizeOfHandDataSequence; 
 
-	int32 HandDataExtractIterations;  //40
+	int32 HandDataExtractIterations;  
+
+	int32 LSTMTimeStep;
+
+	float VelocityWeight;
 
 	int32 CurrentExtractionCount;
-
-	int32 LSTMTimeStep;  // 40
 
 	float AccumulatedDeltaTime;
 

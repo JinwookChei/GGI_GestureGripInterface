@@ -37,6 +37,7 @@ UHandMotionCaptureComponent::UHandMotionCaptureComponent()
 		SizeOfHandDataSequence = GGIGameInstance->SizeOfHandDataSequence;
 		HandDataExtractIterations = GGIGameInstance->HandDataExtractIterations;
 		LSTMTimeStep = GGIGameInstance->LSTMTimeStep;
+		VelocityWeight = GGIGameInstance->VelocityWeight;
 		CurrentExtractionCount = 0;
 		AccumulatedDeltaTime = 0;
 	}
@@ -161,7 +162,10 @@ void UHandMotionCaptureComponent::Initialize_CSVData()
 	// 파일 경로 
 	Filename = FPaths::Combine(Directory, UEnum::GetDisplayValueAsText(HandDataLabel).ToString() + TEXT(".csv"));
 
-	CSVData = TEXT("R_WristRoot_Vel_X,R_WristRoot_Vel_Y,R_WristRoot_Vel_Z,");
+	CSVData = TEXT("R_WristRoot_Relative_Loc_X,R_WristRoot_Relative_Loc_Y,R_WristRoot_Relative_Loc_Z,");
+	CSVData += TEXT("L_WristRoot_Relative_Loc_X,L_WristRoot_Relative_Loc_Y,L_WristRoot_Relative_Loc_Z,");
+
+	CSVData += TEXT("R_WristRoot_Vel_X,R_WristRoot_Vel_Y,R_WristRoot_Vel_Z,");
 	CSVData += TEXT("L_WristRoot_Vel_X,L_WristRoot_Vel_Y,L_WristRoot_Vel_Z,");
 	CSVData += TEXT("R_WristRoot_Rot_Ptich,R_WristRoot_Rot_Yaw,R_WristRoot_Rot_Roll,");
 	CSVData += TEXT("L_WristRoot_Rot_Ptich,L_WristRoot_Rot_Yaw,L_WristRoot_Rot_Roll,");
@@ -234,12 +238,15 @@ void UHandMotionCaptureComponent::ExportHandDatasToCSV(float DeltaTime)
 			FVector CurrentRightHandLocation = OwnerRightXRController->GetRelativeLocation();
 			FVector RightHandWristRootVelocity = CurrentRightHandLocation - PreRightHandLocation;
 			RightHandWristRootVelocity *= DeltaTime;
-			RightHandWristRootVelocity *= 1000;
+			RightHandWristRootVelocity *= VelocityWeight;
 
 			FVector CurrentLeftHandLocation = OwnerLeftXRController->GetRelativeLocation();
 			FVector LeftHandWristRootVelocity = CurrentLeftHandLocation - PreLeftHandLocation;
 			LeftHandWristRootVelocity *= DeltaTime;
-			LeftHandWristRootVelocity *= 1000;
+			LeftHandWristRootVelocity *= VelocityWeight;
+
+			CSVData += FString::Printf(TEXT("%f,%f,%f,"), CurrentRightHandLocation.X, CurrentRightHandLocation.Y, CurrentRightHandLocation.Z);
+			CSVData += FString::Printf(TEXT("%f,%f,%f,"), CurrentLeftHandLocation.X, CurrentLeftHandLocation.Y, CurrentLeftHandLocation.Z);
 
 			CSVData += FString::Printf(TEXT("%f,%f,%f,"), RightHandWristRootVelocity.X, RightHandWristRootVelocity.Y, RightHandWristRootVelocity.Z);
 			CSVData += FString::Printf(TEXT("%f,%f,%f,"), LeftHandWristRootVelocity.X, LeftHandWristRootVelocity.Y, LeftHandWristRootVelocity.Z);

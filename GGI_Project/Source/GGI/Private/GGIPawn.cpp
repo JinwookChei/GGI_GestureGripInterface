@@ -13,7 +13,11 @@
 #include "LSTMInputComponent.h"
 #include "GGIGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Engine/SkeletalMesh.h"
 #include "Misc/CoreMiscDefines.h"
+#include "Animation/SkeletalMeshActor.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
 
 
 // Sets default values
@@ -21,36 +25,36 @@ AGGIPawn::AGGIPawn()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-    Root = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
-    RootComponent = Root;
+	Root = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+	RootComponent = Root;
 
-    CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
-    CameraComponent->SetupAttachment(Root);
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
+	CameraComponent->SetupAttachment(Root);
 
-    // 초기 위치 설정 (필요 시)
-    //CameraComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f)); // 예: Pawn의 머리 높이
-    //CameraComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f)); // 약간 아래로 향하도록 설정
+	// 초기 위치 설정 (필요 시)
+	//CameraComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f)); // 예: Pawn의 머리 높이
+	//CameraComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f)); // 약간 아래로 향하도록 설정
 
-    RightXRController = CreateDefaultSubobject<UGGIMotionControllerComponent>(TEXT("RightController"));
-    RightXRController->SetupAttachment(Root);
-    RightXRController->SetTrackingSource(EControllerHand::Right); // 오른손 설정
+	RightXRController = CreateDefaultSubobject<UGGIMotionControllerComponent>(TEXT("RightController"));
+	RightXRController->SetupAttachment(Root);
+	RightXRController->SetTrackingSource(EControllerHand::Right); // 오른손 설정
 	//RightXRController->SetRelativeLocation(FVector());
 
-    LeftXRController = CreateDefaultSubobject<UGGIMotionControllerComponent>(TEXT("LeftController"));
-    LeftXRController->SetupAttachment(Root);
-    LeftXRController->SetTrackingSource(EControllerHand::Left); // 왼손 설정
+	LeftXRController = CreateDefaultSubobject<UGGIMotionControllerComponent>(TEXT("LeftController"));
+	LeftXRController->SetupAttachment(Root);
+	LeftXRController->SetTrackingSource(EControllerHand::Left); // 왼손 설정
 
-    RightXRHand = CreateDefaultSubobject<UGGIXRHandComponent>(TEXT("RightHand"));
-    RightXRHand->SetupAttachment(RightXRController);
-    RightXRHand->SkeletonType = EOculusXRHandType::HandRight;
+	RightXRHand = CreateDefaultSubobject<UGGIXRHandComponent>(TEXT("RightHand"));
+	RightXRHand->SetupAttachment(RightXRController);
+	RightXRHand->SkeletonType = EOculusXRHandType::HandRight;
 
-    LeftXRHand = CreateDefaultSubobject<UGGIXRHandComponent>(TEXT("LeftHand"));
-    LeftXRHand->SetupAttachment(LeftXRController);
-    LeftXRHand->SkeletonType = EOculusXRHandType::HandLeft;
+	LeftXRHand = CreateDefaultSubobject<UGGIXRHandComponent>(TEXT("LeftHand"));
+	LeftXRHand->SetupAttachment(LeftXRController);
+	LeftXRHand->SkeletonType = EOculusXRHandType::HandLeft;
 
-    HandMotionCaptureComponent = CreateDefaultSubobject<UHandMotionCaptureComponent>(TEXT("LSTMHandlerComponent"));
+	HandMotionCaptureComponent = CreateDefaultSubobject<UHandMotionCaptureComponent>(TEXT("LSTMHandlerComponent"));
 
-    LSTMInputComponent = CreateDefaultSubobject<ULSTMInputComponent>(TEXT("LSTMInputComponent"));
+	LSTMInputComponent = CreateDefaultSubobject<ULSTMInputComponent>(TEXT("LSTMInputComponent"));
 }
 
 void AGGIPawn::BeginPlay()
@@ -63,7 +67,10 @@ void AGGIPawn::BeginPlay()
 		UE_DEBUG_BREAK();
 		return;
 	}
-	
+
+	VelocityWeight = GGIGameInstance->VelocityWeight;
+	WeaponIndex = -1;
+	HaveWeapon = false;
 	LSTMInputSequence.SetMaxNum(GGIGameInstance->LSTMTimeStep);
 }
 
@@ -72,8 +79,11 @@ void AGGIPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-
+	DrawHandPosition();
 	UpdateHandMotionSequence(DeltaTime);
+
+	SpawnAndDestroyWeaponMesh();
+
 
 	PreRightXRHandLocation = RightXRController->GetRelativeLocation();
 	PreLeftXRHandLocation = LeftXRController->GetRelativeLocation();
@@ -108,13 +118,20 @@ void AGGIPawn::UpdateHandMotionSequence(float DeltaTime)
 			FVector CurrentRightHandLocation = RightXRController->GetRelativeLocation();
 			FVector RightHandWristRootVelocity = CurrentRightHandLocation - PreRightXRHandLocation;
 			RightHandWristRootVelocity *= DeltaTime;
-			RightHandWristRootVelocity *= 1000;
+			RightHandWristRootVelocity *= VelocityWeight;
 
 			FVector CurrentLeftHandLocation = LeftXRController->GetRelativeLocation();
 			FVector LeftHandWristRootVelocity = CurrentLeftHandLocation - PreLeftXRHandLocation;
 			LeftHandWristRootVelocity *= DeltaTime;
-			LeftHandWristRootVelocity *= 1000;
+			LeftHandWristRootVelocity *= VelocityWeight;
 
+			HandMotionDataArray.Push(CurrentRightHandLocation.X);
+			HandMotionDataArray.Push(CurrentRightHandLocation.Y);
+			HandMotionDataArray.Push(CurrentRightHandLocation.Z);
+
+			HandMotionDataArray.Push(CurrentLeftHandLocation.X);
+			HandMotionDataArray.Push(CurrentLeftHandLocation.Y);
+			HandMotionDataArray.Push(CurrentLeftHandLocation.Z);
 
 			HandMotionDataArray.Push(RightHandWristRootVelocity.X);
 			HandMotionDataArray.Push(RightHandWristRootVelocity.Y);
@@ -155,43 +172,202 @@ void AGGIPawn::UpdateHandMotionSequence(float DeltaTime)
 	}
 
 	LSTMInputSequence.CircularEnqueue(HandMotionDataArray);
+
 	if (LSTMInputSequence.GetCount() == GGIGameInstance->LSTMTimeStep)
 	{
 		TArray<float> LSTMInputArray;
 		LSTMInputSequence.GetAllData(LSTMInputArray);
-		LSTMInputComponent->ExecuteNNETickInference(LSTMInputArray);
+		LSTMInputComponent->ExecuteNNETickInference(LSTMInputArray, WeaponIndex);
 	}
+}
 
-	
-	// Test
- 	//HandMotionSequenceTest.CircularEnqueue(HandMotionDataArray);
-	//if (HandMotionSequenceTest.GetCount() > GGIGameInstance->LSTMTimeStep)
-	//{
-	//	HandMotionSequenceTest.Dequeue();
-	//}
+void AGGIPawn::DrawHandPosition()
+{
+	for (auto& BoneElem : RightXRHand->BoneNameMappings)
+	{
+		if (BoneElem.Key == EOculusXRBone::Wrist_Root)
+		{
+			
+			FVector CurrentRightHandLocation = RightXRController->GetComponentLocation();
+			FVector CurrentLeftHandLocation = LeftXRController->GetComponentLocation();
 
-	//if (HandMotionSequenceTest.GetCount() == GGIGameInstance->LSTMTimeStep)
-	//{
-	//	//
-	//}
-	
-	//TArray<float> TempArray;
-	//HandMotionSequenceTest.GetAllData(TempArray);
+			DrawDebugSphere(GetWorld(), CurrentRightHandLocation, 0.5f, 8, FColor::Green);
+			DrawDebugSphere(GetWorld(), CurrentLeftHandLocation, 0.5f, 8, FColor::Green);
+		}
+		else
+		{
+			FVector CurrentRightBoneLocation = RightXRHand->GetBoneLocation(BoneElem.Value, EBoneSpaces::WorldSpace);
+			FVector CurrentLeftBoneLocation = LeftXRHand->GetBoneLocation(BoneElem.Value, EBoneSpaces::WorldSpace);\
 
-	//TArray<float> ResultArray;
-	//TArray<float> TempArrayA;
+			
+			DrawDebugSphere(GetWorld(), CurrentRightBoneLocation, 0.5f, 8, FColor::Green);
+			DrawDebugSphere(GetWorld(), CurrentLeftBoneLocation, 0.5f, 8, FColor::Green);
+		}
+	}
+}
 
-	//if (SequenceCount == GGIGameInstance->LSTMTimeStep)
-	//{
-	//	for (int i = 0; i < GGIGameInstance->LSTMTimeStep; i++)
-	//	{
-	//		HandMotionSequence.Dequeue(TempArrayA);
+bool AGGIPawn::SpawnAndDestroyWeaponMesh()
+{
+	if (GetWorld())
+	{
+		if (true == HaveWeapon && (int32)EHandDataLabel::Idle == WeaponIndex)
+		{
+			USkeletalMeshComponent* TempWeaponAsset = CurrentWeaponAsset;
 
-	//		for (double Value : TempArrayA)
-	//		{
-	//			ResultArray.Add(Value);
-	//		}
-	//		HandMotionSequence.Enqueue(TempArrayA);
-	//	}
-	//}
+			CurrentWeaponAsset->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
+			CurrentWeaponAsset = nullptr;
+			HaveWeapon = false;
+
+			FTimerHandle WeaponDeleteTimerHandle;
+			GetWorld()->GetTimerManager().SetTimer(WeaponDeleteTimerHandle, [TempWeaponAsset]()
+				{
+					if (TempWeaponAsset)
+					{
+						TempWeaponAsset->DestroyComponent();
+						UE_LOG(LogTemp, Warning, TEXT("Weapon Deleted!"));
+					}
+				}, 3.0f, false);
+		}
+		else
+		{
+			CurrentWeaponAsset = NewObject<USkeletalMeshComponent>(this);
+
+			if (CurrentWeaponAsset)
+			{
+				if (false == HaveWeapon && (int32)EHandDataLabel::Bow == WeaponIndex)
+				{
+					if (BowMeshAsset)
+					{
+						CurrentWeaponAsset->SetSkeletalMesh(BowMeshAsset);
+					}
+
+					CurrentWeaponAsset->AttachToComponent(LeftXRHand, FAttachmentTransformRules::KeepRelativeTransform);
+
+					CurrentWeaponAsset->SetRelativeLocation(FVector(0.0f, 6.0f, 3.0f));
+					CurrentWeaponAsset->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
+					CurrentWeaponAsset->SetMobility(EComponentMobility::Movable);
+					CurrentWeaponAsset->SetSimulatePhysics(true);
+					CurrentWeaponAsset->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+					CurrentWeaponAsset->SetCollisionObjectType(ECC_PhysicsBody);
+					CurrentWeaponAsset->WakeAllRigidBodies();
+
+					CurrentWeaponAsset->RegisterComponent();
+
+					HaveWeapon = true;
+					UE_LOG(LogTemp, Warning, TEXT("Skeletal Mesh Spawned!"));
+				}
+				else if (false == HaveWeapon && (int32)EHandDataLabel::Sword == WeaponIndex)
+				{
+					if (SwordMeshAsset)
+					{
+						CurrentWeaponAsset->SetSkeletalMesh(SwordMeshAsset);
+					}
+
+					CurrentWeaponAsset->AttachToComponent(RightXRHand, FAttachmentTransformRules::KeepRelativeTransform);
+
+					CurrentWeaponAsset->SetRelativeLocation(FVector(0.0f, 6.0f, 3.0f));
+					CurrentWeaponAsset->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
+					CurrentWeaponAsset->SetMobility(EComponentMobility::Movable);
+					CurrentWeaponAsset->SetSimulatePhysics(true);
+					CurrentWeaponAsset->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+					CurrentWeaponAsset->SetCollisionObjectType(ECC_PhysicsBody);
+					CurrentWeaponAsset->WakeAllRigidBodies();
+
+					CurrentWeaponAsset->RegisterComponent();
+
+					HaveWeapon = true;
+					UE_LOG(LogTemp, Warning, TEXT("Skeletal Mesh Spawned!"));
+				}
+				else if (false == HaveWeapon && (int32)EHandDataLabel::Pistol == WeaponIndex)
+				{
+					if (PistolMeshAsset)
+					{
+						CurrentWeaponAsset->SetSkeletalMesh(PistolMeshAsset);
+					}
+
+					CurrentWeaponAsset->AttachToComponent(RightXRHand, FAttachmentTransformRules::KeepRelativeTransform);
+
+					CurrentWeaponAsset->SetRelativeLocation(FVector(0.0f, 6.0f, 3.0f));
+					CurrentWeaponAsset->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
+					CurrentWeaponAsset->SetMobility(EComponentMobility::Movable);
+					CurrentWeaponAsset->SetSimulatePhysics(true);
+					CurrentWeaponAsset->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+					CurrentWeaponAsset->SetCollisionObjectType(ECC_PhysicsBody);
+					CurrentWeaponAsset->WakeAllRigidBodies();
+
+					CurrentWeaponAsset->RegisterComponent();
+
+					HaveWeapon = true;
+					UE_LOG(LogTemp, Warning, TEXT("Skeletal Mesh Spawned!"));
+				}
+				else if (false == HaveWeapon && (int32)EHandDataLabel::Rifle == WeaponIndex)
+				{
+					if (RifleMeshAsset)
+					{
+						CurrentWeaponAsset->SetSkeletalMesh(RifleMeshAsset);
+					}
+
+					CurrentWeaponAsset->AttachToComponent(RightXRHand, FAttachmentTransformRules::KeepRelativeTransform);
+
+					CurrentWeaponAsset->SetRelativeLocation(FVector(0.0f, 6.0f, 3.0f));
+					CurrentWeaponAsset->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
+					CurrentWeaponAsset->SetMobility(EComponentMobility::Movable);
+					CurrentWeaponAsset->SetSimulatePhysics(true);
+					CurrentWeaponAsset->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+					CurrentWeaponAsset->SetCollisionObjectType(ECC_PhysicsBody);
+					CurrentWeaponAsset->WakeAllRigidBodies();
+
+					CurrentWeaponAsset->RegisterComponent();
+
+					HaveWeapon = true;
+					UE_LOG(LogTemp, Warning, TEXT("Skeletal Mesh Spawned!"));
+				}
+				else if (false == HaveWeapon && (int32)EHandDataLabel::Spear == WeaponIndex)
+				{
+					if (SpearMeshAsset)
+					{
+						CurrentWeaponAsset->SetSkeletalMesh(SpearMeshAsset);
+					}
+
+					CurrentWeaponAsset->AttachToComponent(RightXRHand, FAttachmentTransformRules::KeepRelativeTransform);
+
+					CurrentWeaponAsset->SetRelativeLocation(FVector(0.0f, 6.0f, 3.0f));
+					CurrentWeaponAsset->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
+					CurrentWeaponAsset->SetMobility(EComponentMobility::Movable);
+					CurrentWeaponAsset->SetSimulatePhysics(true);
+					CurrentWeaponAsset->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+					CurrentWeaponAsset->SetCollisionObjectType(ECC_PhysicsBody);
+					CurrentWeaponAsset->WakeAllRigidBodies();
+
+					CurrentWeaponAsset->RegisterComponent();
+
+					HaveWeapon = true;
+					UE_LOG(LogTemp, Warning, TEXT("Skeletal Mesh Spawned!"));
+				}
+				else if (false == HaveWeapon && (int32)EHandDataLabel::Grenade == WeaponIndex)
+				{
+					if (GrenadeMeshAsset)
+					{
+						CurrentWeaponAsset->SetSkeletalMesh(GrenadeMeshAsset);
+					}
+
+					CurrentWeaponAsset->AttachToComponent(RightXRHand, FAttachmentTransformRules::KeepRelativeTransform);
+
+					CurrentWeaponAsset->SetRelativeLocation(FVector(0.0f, 6.0f, 3.0f));
+					CurrentWeaponAsset->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
+					CurrentWeaponAsset->SetMobility(EComponentMobility::Movable);
+					CurrentWeaponAsset->SetSimulatePhysics(true);
+					CurrentWeaponAsset->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+					CurrentWeaponAsset->SetCollisionObjectType(ECC_PhysicsBody);
+					CurrentWeaponAsset->WakeAllRigidBodies();
+
+					CurrentWeaponAsset->RegisterComponent();
+
+					HaveWeapon = true;
+					UE_LOG(LogTemp, Warning, TEXT("Skeletal Mesh Spawned!"));
+				}
+			}
+		}
+	}
+	return true;
 }

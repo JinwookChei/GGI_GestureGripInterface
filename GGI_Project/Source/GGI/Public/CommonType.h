@@ -18,6 +18,7 @@ enum class EHandType : uint8
 UENUM(BlueprintType)
 enum class EHandDataLabel : uint8
 {
+    Idle UMETA(DisplayName = "Idle"),
     Bow UMETA(DisplayName = "Bow"),
     Sword UMETA(DisplayName = "Sword"),
     Pistol UMETA(DisplayName = "Pistol"),

@@ -59,17 +59,50 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	class ULSTMInputComponent* LSTMInputComponent;
 
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapons")
+	class USkeletalMesh* BowMeshAsset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapons")
+	class USkeletalMesh* SwordMeshAsset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapons")
+	class USkeletalMesh* PistolMeshAsset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapons")
+	class USkeletalMesh* RifleMeshAsset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapons")
+	class USkeletalMesh* SpearMeshAsset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapons")
+	class USkeletalMesh* GrenadeMeshAsset;
+
+	UPROPERTY()
+	class USkeletalMeshComponent* CurrentWeaponAsset;
+
 private:
+	
 	class UGGIGameInstance* GGIGameInstance;
 
 	FVector PreRightXRHandLocation;
 
 	FVector PreLeftXRHandLocation;
 
+	float VelocityWeight;
+
 	void UpdateHandMotionSequence(float DeltaTime);
+
+	void DrawHandPosition();
 
 	GGIQueue LSTMInputSequence;
 
+	int32 WeaponIndex;
+
+	bool HaveWeapon;
+
+	bool SpawnAndDestroyWeaponMesh();
 
 
 
