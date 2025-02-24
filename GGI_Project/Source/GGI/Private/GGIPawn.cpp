@@ -34,6 +34,7 @@ AGGIPawn::AGGIPawn()
     RightXRController = CreateDefaultSubobject<UGGIMotionControllerComponent>(TEXT("RightController"));
     RightXRController->SetupAttachment(Root);
     RightXRController->SetTrackingSource(EControllerHand::Right); // 오른손 설정
+	//RightXRController->SetRelativeLocation(FVector());
 
     LeftXRController = CreateDefaultSubobject<UGGIMotionControllerComponent>(TEXT("LeftController"));
     LeftXRController->SetupAttachment(Root);
@@ -60,11 +61,14 @@ void AGGIPawn::BeginPlay()
 	if (nullptr == GGIGameInstance)
 	{
 		UE_DEBUG_BREAK();
+		return;
 	}
-
+	
 	SequenceCount = 0;
 
 	TickCount = 0;
+
+	HandMotionSequenceTest.SetMaxNum(GGIGameInstance->LSTMTimeStep);
 }
 
 
@@ -74,10 +78,10 @@ void AGGIPawn::Tick(float DeltaTime)
 
 	TickCount++;
 
-	UpdateHandMotionSequence(DeltaTime);
+	//UpdateHandMotionSequence(DeltaTime);
 
-	PreRightXRHandLocation = RightXRController->GetRelativeLocation();
-	PreLeftXRHandLocation = LeftXRController->GetRelativeLocation();
+	//PreRightXRHandLocation = RightXRController->GetRelativeLocation();
+	//PreLeftXRHandLocation = LeftXRController->GetRelativeLocation();
 }
 
 
@@ -155,70 +159,70 @@ void AGGIPawn::UpdateHandMotionSequence(float DeltaTime)
 		}
 	}
 
-	HandMotionSequence.Enqueue(HandMotionDataArray);
-	
-	SequenceCount++;
+	//HandMotionSequence.Enqueue(HandMotionDataArray);
+	//
+	//SequenceCount++;
 
-	if (SequenceCount > GGIGameInstance->LSTMTimeStep)
-	{
-		HandMotionSequence.Pop();
-		SequenceCount--;
-	}
+	//if (SequenceCount > GGIGameInstance->LSTMTimeStep)
+	//{
+	//	HandMotionSequence.Pop();
+	//	SequenceCount--;
+	//}
 
-	if(SequenceCount == GGIGameInstance->LSTMTimeStep)
-	{ 
-		AnalyzeHandMotionSequenceInLSTM();
-	}
+	//if(SequenceCount == GGIGameInstance->LSTMTimeStep)
+	//{ 
+	//	AnalyzeHandMotionSequenceInLSTM();
+	//}
 
 	
 	// Test
- 	HandMotionSequenceTest.Enqueue(HandMotionDataArray);
-	if (HandMotionSequenceTest.GetCount() > GGIGameInstance->LSTMTimeStep)
-	{
-		HandMotionSequenceTest.Dequeue();
-	}
+ 	//HandMotionSequenceTest.CircularEnqueue(HandMotionDataArray);
+	//if (HandMotionSequenceTest.GetCount() > GGIGameInstance->LSTMTimeStep)
+	//{
+	//	HandMotionSequenceTest.Dequeue();
+	//}
 
-	if (HandMotionSequenceTest.GetCount() == GGIGameInstance->LSTMTimeStep)
-	{
-		//
-	}
+	//if (HandMotionSequenceTest.GetCount() == GGIGameInstance->LSTMTimeStep)
+	//{
+	//	//
+	//}
 	
-	TArray<float> TempArray;
-	HandMotionSequenceTest.GetAllData(TempArray);
+	//TArray<float> TempArray;
+	//HandMotionSequenceTest.GetAllData(TempArray);
 
-	TArray<float> ResultArray;
-	TArray<float> TempArrayA;
+	//TArray<float> ResultArray;
+	//TArray<float> TempArrayA;
 
-	if (SequenceCount == GGIGameInstance->LSTMTimeStep)
-	{
-		//TArray<float> InputSequence;
-		for (int i = 0; i < GGIGameInstance->LSTMTimeStep; i++)
-		{
-			//OwnerPawn->JointSequenceData.Dequeue(TempArray);
-			HandMotionSequence.Dequeue(TempArrayA);
+	//if (SequenceCount == GGIGameInstance->LSTMTimeStep)
+	//{
+	//	for (int i = 0; i < GGIGameInstance->LSTMTimeStep; i++)
+	//	{
+	//		HandMotionSequence.Dequeue(TempArrayA);
 
-			for (double Value : TempArrayA)
-			{
-				//ResultArray.Add(static_cast<float>(Value)); // double을 float로 변환하여 추가
-				ResultArray.Add(Value);
-			}
-			HandMotionSequence.Enqueue(TempArrayA);
-		}
-	}
+	//		for (double Value : TempArrayA)
+	//		{
+	//			ResultArray.Add(Value);
+	//		}
+	//		HandMotionSequence.Enqueue(TempArrayA);
+	//	}
+	//}
 
+	
+	//if (1000< curCount && curCount < TestCount+1000)
+	//{
+	//	FString Message = TEXT("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+	//	FColor TextColor = FColor::Green;
+	//	float DisplayTime = 1.0f;
+	//	GEngine->AddOnScreenDebugMessage(-1, DisplayTime, TextColor, Message);
 
-	if(TickCount == 1000)
-	{
-		UE_LOG(LogTemp, Display, TEXT("HandMotionSequence Start"));
-		for (int i = 0; i < ResultArray.Num(); ++i)
-		{	
-			UE_LOG(LogTemp, Display, TEXT("%s"), ResultArray[i] == TempArray[i] ? TEXT("TRUE") : TEXT("FALSE"));
-		}
-		UE_LOG(LogTemp, Display, TEXT("HandMotionSequence End"));
+	//	accumulateScore += DeltaTime;
+	//}
+	//if (curCount == TestCount+1000)
+	//{
+	//	UE_LOG(LogTemp, Display, TEXT("Result : %f"), accumulateScore);
+	//}
 
-		TickCount = 0;
-	}
-
+	//++curCount;
 }
 
 void AGGIPawn::AnalyzeHandMotionSequenceInLSTM()

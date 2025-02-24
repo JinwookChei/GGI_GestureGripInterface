@@ -266,9 +266,6 @@ void UHandMotionCaptureComponent::ExportHandDatasToCSV(float DeltaTime)
 
 	switch (HandDataLabel)
 	{
-	case EHandDataLabel::Idle:
-		CSVData += FString::Printf(TEXT("%d\n"), EHandDataLabel::Idle);
-		break;
 	case EHandDataLabel::Bow:
 		CSVData += FString::Printf(TEXT("%d\n"), EHandDataLabel::Bow);
 		break;
@@ -278,8 +275,8 @@ void UHandMotionCaptureComponent::ExportHandDatasToCSV(float DeltaTime)
 	case EHandDataLabel::Pistol:
 		CSVData += FString::Printf(TEXT("%d\n"), EHandDataLabel::Pistol);
 		break;
-	case EHandDataLabel::MachineGun:
-		CSVData += FString::Printf(TEXT("%d\n"), EHandDataLabel::MachineGun);
+	case EHandDataLabel::Rifle:
+		CSVData += FString::Printf(TEXT("%d\n"), EHandDataLabel::Rifle);
 		break;
 	case EHandDataLabel::Spear:
 		CSVData += FString::Printf(TEXT("%d\n"), EHandDataLabel::Spear);

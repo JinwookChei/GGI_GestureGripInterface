@@ -99,13 +99,11 @@ struct Z_Construct_UEnum_GGI_EHandDataLabel_Statics
 		{ "Bow.Name", "EHandDataLabel::Bow" },
 		{ "Grenade.DisplayName", "Grenade" },
 		{ "Grenade.Name", "EHandDataLabel::Grenade" },
-		{ "Idle.DisplayName", "Idle" },
-		{ "Idle.Name", "EHandDataLabel::Idle" },
-		{ "MachineGun.DisplayName", "MachineGun" },
-		{ "MachineGun.Name", "EHandDataLabel::MachineGun" },
 		{ "ModuleRelativePath", "Public/CommonType.h" },
 		{ "Pistol.DisplayName", "Pistol" },
 		{ "Pistol.Name", "EHandDataLabel::Pistol" },
+		{ "Rifle.DisplayName", "Rifle" },
+		{ "Rifle.Name", "EHandDataLabel::Rifle" },
 		{ "Spear.DisplayName", "Spear" },
 		{ "Spear.Name", "EHandDataLabel::Spear" },
 		{ "Sword.DisplayName", "Sword" },
@@ -113,11 +111,10 @@ struct Z_Construct_UEnum_GGI_EHandDataLabel_Statics
 	};
 #endif // WITH_METADATA
 	static constexpr UECodeGen_Private::FEnumeratorParam Enumerators[] = {
-		{ "EHandDataLabel::Idle", (int64)EHandDataLabel::Idle },
 		{ "EHandDataLabel::Bow", (int64)EHandDataLabel::Bow },
 		{ "EHandDataLabel::Sword", (int64)EHandDataLabel::Sword },
 		{ "EHandDataLabel::Pistol", (int64)EHandDataLabel::Pistol },
-		{ "EHandDataLabel::MachineGun", (int64)EHandDataLabel::MachineGun },
+		{ "EHandDataLabel::Rifle", (int64)EHandDataLabel::Rifle },
 		{ "EHandDataLabel::Spear", (int64)EHandDataLabel::Spear },
 		{ "EHandDataLabel::Grenade", (int64)EHandDataLabel::Grenade },
 	};
@@ -273,11 +270,11 @@ struct Z_CompiledInDeferFile_FID_GGI_GestureGripInterface_GGI_Project_Source_GGI
 {
 	static constexpr FEnumRegisterCompiledInInfo EnumInfo[] = {
 		{ EHandType_StaticEnum, TEXT("EHandType"), &Z_Registration_Info_UEnum_EHandType, CONSTRUCT_RELOAD_VERSION_INFO(FEnumReloadVersionInfo, 2529835082U) },
-		{ EHandDataLabel_StaticEnum, TEXT("EHandDataLabel"), &Z_Registration_Info_UEnum_EHandDataLabel, CONSTRUCT_RELOAD_VERSION_INFO(FEnumReloadVersionInfo, 4084854308U) },
+		{ EHandDataLabel_StaticEnum, TEXT("EHandDataLabel"), &Z_Registration_Info_UEnum_EHandDataLabel, CONSTRUCT_RELOAD_VERSION_INFO(FEnumReloadVersionInfo, 3442351215U) },
 		{ EHandJointType_StaticEnum, TEXT("EHandJointType"), &Z_Registration_Info_UEnum_EHandJointType, CONSTRUCT_RELOAD_VERSION_INFO(FEnumReloadVersionInfo, 3240843467U) },
 	};
 };
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_CommonType_h_2706403829(TEXT("/Script/GGI"),
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_CommonType_h_1376094720(TEXT("/Script/GGI"),
 	nullptr, 0,
 	nullptr, 0,
 	Z_CompiledInDeferFile_FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_CommonType_h_Statics::EnumInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_GGI_GestureGripInterface_GGI_Project_Source_GGI_Public_CommonType_h_Statics::EnumInfo));

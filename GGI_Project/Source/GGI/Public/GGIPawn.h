@@ -80,4 +80,7 @@ private:
 
 	int TickCount;
 
+	int32 TestCount = 2000;
+	int32 curCount = 0;
+	float accumulateScore = 0;
 };

@@ -11,7 +11,8 @@ LinkItem::LinkItem()
 
 GGIQueue::GGIQueue()
 	: Head(nullptr),
-	Tail(nullptr)
+	Tail(nullptr),
+	MaxNum(10)
 {
 }
 
@@ -23,30 +24,44 @@ GGIQueue::~GGIQueue()
 	}
 }
 
-bool GGIQueue::Enqueue(const TArray<float>& InItems)
+bool GGIQueue::CircularEnqueue(const TArray<float>& InItems)
 {
-	LinkItem* NewLinkItem = new LinkItem;
-	if (nullptr == NewLinkItem)
+	if(Count < MaxNum)
 	{
-		return false;
-	}
+		LinkItem* NewLinkItem = new LinkItem;
+		if (nullptr == NewLinkItem)
+		{
+			return false;
+		}
 
-	NewLinkItem->Items = InItems;
+		NewLinkItem->Items = InItems;
 
-	if (nullptr == Tail)
-	{
-		Head = NewLinkItem;
-		Tail = NewLinkItem;
-		++Count;
+		if (nullptr == Tail)
+		{
+			Head = NewLinkItem;
+			Tail = NewLinkItem;
+			++Count;
+		}
+		else
+		{
+			Tail->Next = NewLinkItem;
+			Tail = NewLinkItem;
+			++Count;
+		}
+
+		return true;
 	}
 	else
 	{
-		Tail->Next = NewLinkItem;
-		Tail = NewLinkItem;
-		++Count;
-	}
+		Tail->Next = &*Head;
+		Tail = &*Head;
 
-	return true;
+		Head = Head->Next;
+		Tail->Next = nullptr;
+		Tail->Items = InItems;
+
+		return true;
+	}
 }
 
 bool GGIQueue::Dequeue()
@@ -72,6 +87,11 @@ bool GGIQueue::Dequeue()
 	}
 
 	return true;
+}
+
+void GGIQueue::SetMaxNum(int32 InMaxNum)
+{
+	MaxNum = InMaxNum;
 }
 
 int32 GGIQueue::GetCount() const

@@ -26,8 +26,10 @@ public:
 	UPROPERTY()
 	LinkItem* Tail;
 
-	bool Enqueue(const TArray<float>& InItems);
+	bool CircularEnqueue(const TArray<float>& InItems);
 	bool Dequeue();
+
+	void SetMaxNum(int32 InMaxNum);
 
 	int32 GetCount() const;
 
@@ -35,4 +37,6 @@ public:
 
 private:
 	int32 Count;
+
+	int32 MaxNum;
 };
