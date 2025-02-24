@@ -64,11 +64,7 @@ void AGGIPawn::BeginPlay()
 		return;
 	}
 	
-	SequenceCount = 0;
-
-	TickCount = 0;
-
-	HandMotionSequenceTest.SetMaxNum(GGIGameInstance->LSTMTimeStep);
+	LSTMInputSequence.SetMaxNum(GGIGameInstance->LSTMTimeStep);
 }
 
 
@@ -76,12 +72,11 @@ void AGGIPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	TickCount++;
 
-	//UpdateHandMotionSequence(DeltaTime);
+	UpdateHandMotionSequence(DeltaTime);
 
-	//PreRightXRHandLocation = RightXRController->GetRelativeLocation();
-	//PreLeftXRHandLocation = LeftXRController->GetRelativeLocation();
+	PreRightXRHandLocation = RightXRController->GetRelativeLocation();
+	PreLeftXRHandLocation = LeftXRController->GetRelativeLocation();
 }
 
 
@@ -93,7 +88,7 @@ void AGGIPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void AGGIPawn::UpdateHandMotionSequence(float DeltaTime)
 {
 	TArray<float> HandMotionDataArray;
-	
+
 	for (auto& BoneElem : RightXRHand->BoneNameMappings)
 	{
 		FVector JointLocation;
@@ -119,8 +114,8 @@ void AGGIPawn::UpdateHandMotionSequence(float DeltaTime)
 			FVector LeftHandWristRootVelocity = CurrentLeftHandLocation - PreLeftXRHandLocation;
 			LeftHandWristRootVelocity *= DeltaTime;
 			LeftHandWristRootVelocity *= 1000;
-			
-			
+
+
 			HandMotionDataArray.Push(RightHandWristRootVelocity.X);
 			HandMotionDataArray.Push(RightHandWristRootVelocity.Y);
 			HandMotionDataArray.Push(RightHandWristRootVelocity.Z);
@@ -152,27 +147,20 @@ void AGGIPawn::UpdateHandMotionSequence(float DeltaTime)
 			HandMotionDataArray.Push(RightBoneRelativeRotator.Pitch);
 			HandMotionDataArray.Push(RightBoneRelativeRotator.Yaw);
 			HandMotionDataArray.Push(RightBoneRelativeRotator.Roll);
-			
+
 			HandMotionDataArray.Push(LeftBoneRelativeRotator.Pitch);
 			HandMotionDataArray.Push(LeftBoneRelativeRotator.Yaw);
 			HandMotionDataArray.Push(LeftBoneRelativeRotator.Roll);
 		}
 	}
 
-	//HandMotionSequence.Enqueue(HandMotionDataArray);
-	//
-	//SequenceCount++;
-
-	//if (SequenceCount > GGIGameInstance->LSTMTimeStep)
-	//{
-	//	HandMotionSequence.Pop();
-	//	SequenceCount--;
-	//}
-
-	//if(SequenceCount == GGIGameInstance->LSTMTimeStep)
-	//{ 
-	//	AnalyzeHandMotionSequenceInLSTM();
-	//}
+	LSTMInputSequence.CircularEnqueue(HandMotionDataArray);
+	if (LSTMInputSequence.GetCount() == GGIGameInstance->LSTMTimeStep)
+	{
+		TArray<float> LSTMInputArray;
+		LSTMInputSequence.GetAllData(LSTMInputArray);
+		LSTMInputComponent->ExecuteNNETickInference(LSTMInputArray);
+	}
 
 	
 	// Test
@@ -206,27 +194,4 @@ void AGGIPawn::UpdateHandMotionSequence(float DeltaTime)
 	//		HandMotionSequence.Enqueue(TempArrayA);
 	//	}
 	//}
-
-	
-	//if (1000< curCount && curCount < TestCount+1000)
-	//{
-	//	FString Message = TEXT("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-	//	FColor TextColor = FColor::Green;
-	//	float DisplayTime = 1.0f;
-	//	GEngine->AddOnScreenDebugMessage(-1, DisplayTime, TextColor, Message);
-
-	//	accumulateScore += DeltaTime;
-	//}
-	//if (curCount == TestCount+1000)
-	//{
-	//	UE_LOG(LogTemp, Display, TEXT("Result : %f"), accumulateScore);
-	//}
-
-	//++curCount;
 }
-
-void AGGIPawn::AnalyzeHandMotionSequenceInLSTM()
-{
-	LSTMInputComponent->ExecuteNNETickInference(HandMotionSequence);
-}
-

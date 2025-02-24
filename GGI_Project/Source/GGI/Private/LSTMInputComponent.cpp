@@ -24,6 +24,11 @@ void ULSTMInputComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
+	Threshold = 0.97f;
+	PreIndex = -1;
+	SameCount = 0;
+	SameCountThreshold = 15;
+
 	Initialize();
 }
 
@@ -135,7 +140,7 @@ void ULSTMInputComponent::Initialize()
 	}
 }
 
-void ULSTMInputComponent::ExecuteNNETickInference(TQueue<TArray<float>>& InJointSequenceData) const
+void ULSTMInputComponent::ExecuteNNETickInference(const TArray<float>& InLSTMInputArray)
 {
 	if (ModelHelper.IsValid())
 	{
@@ -146,96 +151,87 @@ void ULSTMInputComponent::ExecuteNNETickInference(TQueue<TArray<float>>& InJoint
 			// Fill in new data into ModelHelper->InputData here
 
 			// TODO : ++
-			/*TArray<float> ResultArray;
-			TArray<float> TempArray;
 
-			for (int i = 0; i < GGIGameInstance->LSTMTimeStep; i++)
+			ModelHelper->InputData = InLSTMInputArray;
+
+			float MaxOutput = 0;
+			int32 MaxIndex = -1;
+
+			for (int32 i = 0; i < ModelHelper->OutputData.Num(); i++)
 			{
-				InJointSequenceData.Dequeue(TempArray);
-
-				for (float Value : TempArray)
+				if (MaxOutput < ModelHelper->OutputData[i] && ModelHelper->OutputData[i] > Threshold)
 				{
-					ResultArray.Add(Value);
+					MaxOutput = ModelHelper->OutputData[i];
+					MaxIndex = i;
 				}
 			}
 
-			ModelHelper->InputData = ResultArray;
+			if (-1 == MaxIndex)
+			{
+				SameCount = 0;
+				PreIndex = -1;
+			}
+			else if (PreIndex == MaxIndex)
+			{
+				++SameCount;
+			}
+			else
+			{
+				PreIndex = MaxIndex;
+			}
 
-			UE_LOG(LogTemp, Display, TEXT("ModelHelper->InputData.Num() : %d"), ModelHelper->InputData.Num());*/
 
+			
+			FString Message;
+			FColor TextColor;
+			float DisplayTime = 1.0f;
 
-			//float MaxOutput = 0;
-			//int MaxIndex = 0;
-			//FString Message;
-			//FColor TextColor;
-			//for (int i = 0; i < ModelHelper->OutputData.Num(); i++)
-			//{
-			//	if (MaxOutput < ModelHelper->OutputData[i] && ModelHelper->OutputData[i] > 0.97f)
-			//	{
-			//		MaxOutput = ModelHelper->OutputData[i];
-			//		MaxIndex = i;
-			//	}
-			//}
+			if (SameCount >= 15)
+			{
+				if (MaxIndex == -1)
+				{
+					Message = TEXT("???");
+					TextColor = FColor::Black;
+				}
+				else if (MaxIndex == 0)
+				{
+					Message = TEXT("Bow");
+					TextColor = FColor::Purple;
+				}
+				else if (MaxIndex == 1)
+				{
+					Message = TEXT("Sword");
+					TextColor = FColor::Red;
+				}
+				else if (MaxIndex == 2)
+				{
+					Message = TEXT("Pistol");
+					TextColor = FColor::Blue;
+				}
+				else if (MaxIndex == 3)
+				{
+					Message = TEXT("MachineGun");
+					TextColor = FColor::Orange;
+				}
+				else if (MaxIndex == 4)
+				{
+					Message = TEXT("Spear");
+					TextColor = FColor::Yellow;
+				}
+				else if (MaxIndex == 5)
+				{
+					Message = TEXT("Grenade");
+					TextColor = FColor::Cyan;
+				}
 
-			//if (PreIndex == MaxIndex)
-			//{
-			//	SameCount++;
-			//}
-			//else
-			//{
-			//	SameCount = 0;
-			//}
-
-			//PreIndex = MaxIndex;
-
-			//if (SameCount >= 15)
-			//{
-			//	if (MaxIndex == 0)
-			//	{
-			//		Message = TEXT("???");
-			//		TextColor = FColor::Black;
-			//	}
-			//	else if (MaxIndex == 1)
-			//	{
-			//		Message = TEXT("Bow");
-			//		TextColor = FColor::Purple;
-			//	}
-			//	else if (MaxIndex == 2)
-			//	{
-			//		Message = TEXT("Sword");
-			//		TextColor = FColor::Red;
-			//	}
-			//	else if (MaxIndex == 3)
-			//	{
-			//		Message = TEXT("Pistol");
-			//		TextColor = FColor::Blue;
-			//	}
-			//	else if (MaxIndex == 4)
-			//	{
-			//		Message = TEXT("MachineGun");
-			//		TextColor = FColor::Orange;
-			//	}
-			//	else if (MaxIndex == 5)
-			//	{
-			//		Message = TEXT("Spear");
-			//		TextColor = FColor::Yellow;
-			//	}
-			//	else if (MaxIndex == 6)
-			//	{
-			//		Message = TEXT("Grenade");
-			//		TextColor = FColor::Cyan;
-			//	}
-
-			//	float DisplayTime = 0.5f; // 5초 동안 표시
-			//	// 메시지 출력 (키는 0부터 9999까지 임의로 설정 가능)
-			//	GEngine->AddOnScreenDebugMessage(-1, DisplayTime, TextColor, Message);
-			//}
-			//else
-			//{
-			//	Message = TEXT("?????????");
-			//	TextColor = FColor::Black;
-			//}
-			//
+				GEngine->AddOnScreenDebugMessage(-1, DisplayTime, TextColor, Message);
+			}
+			else
+			{
+				Message = TEXT("?????????");
+				TextColor = FColor::Black;
+			}
+			
 
 
 

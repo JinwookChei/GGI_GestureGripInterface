@@ -66,21 +66,11 @@ private:
 
 	FVector PreLeftXRHandLocation;
 
-	TQueue<TArray<float>> HandMotionSequence;
-
-	int32 SequenceCount;
-
 	void UpdateHandMotionSequence(float DeltaTime);
 
-	void AnalyzeHandMotionSequenceInLSTM();
+	GGIQueue LSTMInputSequence;
 
 
-	//Test
-	GGIQueue HandMotionSequenceTest;
 
-	int TickCount;
 
-	int32 TestCount = 2000;
-	int32 curCount = 0;
-	float accumulateScore = 0;
 };
