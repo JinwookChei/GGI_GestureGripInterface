@@ -90,7 +90,9 @@ private:
 
 	FVector PreLeftXRHandLocation;
 
-	float VelocityWeight;
+	float RootVelocityWeight;
+
+	float RootLocationWeight;
 
 	void UpdateHandMotionSequence(float DeltaTime);
 

@@ -37,7 +37,8 @@ UHandMotionCaptureComponent::UHandMotionCaptureComponent()
 		SizeOfHandDataSequence = GGIGameInstance->SizeOfHandDataSequence;
 		HandDataExtractIterations = GGIGameInstance->HandDataExtractIterations;
 		LSTMTimeStep = GGIGameInstance->LSTMTimeStep;
-		VelocityWeight = GGIGameInstance->VelocityWeight;
+		RootVelocityWeight = GGIGameInstance->RootVelocityWeight;
+		RootLocationWeight = GGIGameInstance->RootLocationWeight;
 		CurrentExtractionCount = 0;
 		AccumulatedDeltaTime = 0;
 	}
@@ -76,10 +77,10 @@ void UHandMotionCaptureComponent::TickComponent(float DeltaTime, ELevelTick Tick
 
 		FString Message = FString::Printf(TEXT("%d th,   Hand Data Recording  -  %d / %d"), CurrentExtractionCount, TickCount, SizeOfHandDataSequence);
 		FColor TextColor = FColor::Red;
-		float DisplayTime = -1.0f;
+		float DisplayTime = 1.0f;
 		GEngine->AddOnScreenDebugMessage(-1, DisplayTime, TextColor, Message);
 	}
-	else if (CurrentExtractionCount < HandDataExtractIterations-1)
+	else if (CurrentExtractionCount < HandDataExtractIterations - 1)
 	{
 		AccumulatedDeltaTime += DeltaTime;
 
@@ -88,7 +89,7 @@ void UHandMotionCaptureComponent::TickComponent(float DeltaTime, ELevelTick Tick
 		float DisplayTime = -1.0f;
 		GEngine->AddOnScreenDebugMessage(-1, DisplayTime, TextColor, Message);
 
-		if (AccumulatedDeltaTime > 4.0f)
+		if (AccumulatedDeltaTime > 2.0f)
 		{
 			TickCount = 0;
 			CurrentExtractionCount++;
@@ -162,8 +163,7 @@ void UHandMotionCaptureComponent::Initialize_CSVData()
 	// 파일 경로 
 	Filename = FPaths::Combine(Directory, UEnum::GetDisplayValueAsText(HandDataLabel).ToString() + TEXT(".csv"));
 
-	CSVData = TEXT("R_WristRoot_Relative_Loc_X,R_WristRoot_Relative_Loc_Y,R_WristRoot_Relative_Loc_Z,");
-	CSVData += TEXT("L_WristRoot_Relative_Loc_X,L_WristRoot_Relative_Loc_Y,L_WristRoot_Relative_Loc_Z,");
+	CSVData = TEXT("Hands_Relative_Loc_X,Hands_Relative_Loc_Y,Hands_Relative_Loc_Z,");
 
 	CSVData += TEXT("R_WristRoot_Vel_X,R_WristRoot_Vel_Y,R_WristRoot_Vel_Z,");
 	CSVData += TEXT("L_WristRoot_Vel_X,L_WristRoot_Vel_Y,L_WristRoot_Vel_Z,");
@@ -238,26 +238,29 @@ void UHandMotionCaptureComponent::ExportHandDatasToCSV(float DeltaTime)
 			FVector CurrentRightHandLocation = OwnerRightXRController->GetRelativeLocation();
 			FVector RightHandWristRootVelocity = CurrentRightHandLocation - PreRightHandLocation;
 			RightHandWristRootVelocity *= DeltaTime;
-			RightHandWristRootVelocity *= VelocityWeight;
+			RightHandWristRootVelocity *= RootVelocityWeight;
 
 			FVector CurrentLeftHandLocation = OwnerLeftXRController->GetRelativeLocation();
 			FVector LeftHandWristRootVelocity = CurrentLeftHandLocation - PreLeftHandLocation;
 			LeftHandWristRootVelocity *= DeltaTime;
-			LeftHandWristRootVelocity *= VelocityWeight;
+			LeftHandWristRootVelocity *= RootVelocityWeight;
 
-			CSVData += FString::Printf(TEXT("%f,%f,%f,"), CurrentRightHandLocation.X, CurrentRightHandLocation.Y, CurrentRightHandLocation.Z);
-			CSVData += FString::Printf(TEXT("%f,%f,%f,"), CurrentLeftHandLocation.X, CurrentLeftHandLocation.Y, CurrentLeftHandLocation.Z);
+			FVector HandRelativeLocation = CurrentRightHandLocation - CurrentLeftHandLocation;
 
+			CSVData += FString::Printf(TEXT("%f,%f,%f,"), HandRelativeLocation.X, HandRelativeLocation.Y, HandRelativeLocation.Z);
 			CSVData += FString::Printf(TEXT("%f,%f,%f,"), RightHandWristRootVelocity.X, RightHandWristRootVelocity.Y, RightHandWristRootVelocity.Z);
 			CSVData += FString::Printf(TEXT("%f,%f,%f,"), LeftHandWristRootVelocity.X, LeftHandWristRootVelocity.Y, LeftHandWristRootVelocity.Z);
 
 
 			FRotator RightWristRootRelativeRotation = OwnerRightXRController->GetRelativeRotation();
 			FRotator LeftWristRootRelativeRotation = OwnerLeftXRController->GetRelativeRotation();
+
 			CSVData += FString::Printf(TEXT("%f,%f,%f,"), RightWristRootRelativeRotation.Pitch, RightWristRootRelativeRotation.Yaw, RightWristRootRelativeRotation.Roll);
 			CSVData += FString::Printf(TEXT("%f,%f,%f,"), LeftWristRootRelativeRotation.Pitch, LeftWristRootRelativeRotation.Yaw, LeftWristRootRelativeRotation.Roll);
 
 		}
+
+
 		else
 		{
 			FQuat RightBoneRelativeQuat = UOculusXRInputFunctionLibrary::GetBoneRotation(EOculusXRHandType::HandRight, BoneElem.Key, 0);
@@ -273,6 +276,9 @@ void UHandMotionCaptureComponent::ExportHandDatasToCSV(float DeltaTime)
 
 	switch (HandDataLabel)
 	{
+	case EHandDataLabel::Idle:
+		CSVData += FString::Printf(TEXT("%d\n"), EHandDataLabel::Idle);
+		break;
 	case EHandDataLabel::Bow:
 		CSVData += FString::Printf(TEXT("%d\n"), EHandDataLabel::Bow);
 		break;

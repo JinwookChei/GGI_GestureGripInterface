@@ -12,7 +12,7 @@ LinkItem::LinkItem()
 GGIQueue::GGIQueue()
 	: Head(nullptr),
 	Tail(nullptr),
-	MaxNum(10)
+	MaxNum(80)
 {
 }
 

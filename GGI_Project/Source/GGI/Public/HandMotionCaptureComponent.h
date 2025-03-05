@@ -37,7 +37,9 @@ private:
 
 	int32 LSTMTimeStep;
 
-	float VelocityWeight;
+	float RootVelocityWeight;
+
+	float RootLocationWeight; // Regacy
 
 	int32 CurrentExtractionCount;
 

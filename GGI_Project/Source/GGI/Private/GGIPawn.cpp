@@ -68,7 +68,8 @@ void AGGIPawn::BeginPlay()
 		return;
 	}
 
-	VelocityWeight = GGIGameInstance->VelocityWeight;
+	RootVelocityWeight = GGIGameInstance->RootVelocityWeight;
+	RootLocationWeight = GGIGameInstance->RootLocationWeight;
 	WeaponIndex = -1;
 	HaveWeapon = false;
 	LSTMInputSequence.SetMaxNum(GGIGameInstance->LSTMTimeStep);
@@ -80,10 +81,10 @@ void AGGIPawn::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	DrawHandPosition();
+
 	UpdateHandMotionSequence(DeltaTime);
 
 	SpawnAndDestroyWeaponMesh();
-
 
 	PreRightXRHandLocation = RightXRController->GetRelativeLocation();
 	PreLeftXRHandLocation = LeftXRController->GetRelativeLocation();
@@ -118,20 +119,19 @@ void AGGIPawn::UpdateHandMotionSequence(float DeltaTime)
 			FVector CurrentRightHandLocation = RightXRController->GetRelativeLocation();
 			FVector RightHandWristRootVelocity = CurrentRightHandLocation - PreRightXRHandLocation;
 			RightHandWristRootVelocity *= DeltaTime;
-			RightHandWristRootVelocity *= VelocityWeight;
+			RightHandWristRootVelocity *= RootVelocityWeight;
 
 			FVector CurrentLeftHandLocation = LeftXRController->GetRelativeLocation();
 			FVector LeftHandWristRootVelocity = CurrentLeftHandLocation - PreLeftXRHandLocation;
 			LeftHandWristRootVelocity *= DeltaTime;
-			LeftHandWristRootVelocity *= VelocityWeight;
+			LeftHandWristRootVelocity *= RootVelocityWeight;
 
-			HandMotionDataArray.Push(CurrentRightHandLocation.X);
-			HandMotionDataArray.Push(CurrentRightHandLocation.Y);
-			HandMotionDataArray.Push(CurrentRightHandLocation.Z);
+			FVector HandRelativeLocation = CurrentRightHandLocation - CurrentLeftHandLocation;
 
-			HandMotionDataArray.Push(CurrentLeftHandLocation.X);
-			HandMotionDataArray.Push(CurrentLeftHandLocation.Y);
-			HandMotionDataArray.Push(CurrentLeftHandLocation.Z);
+			HandMotionDataArray.Push(HandRelativeLocation.X);
+			HandMotionDataArray.Push(HandRelativeLocation.Y);
+			HandMotionDataArray.Push(HandRelativeLocation.Z);
+
 
 			HandMotionDataArray.Push(RightHandWristRootVelocity.X);
 			HandMotionDataArray.Push(RightHandWristRootVelocity.Y);
@@ -187,7 +187,7 @@ void AGGIPawn::DrawHandPosition()
 	{
 		if (BoneElem.Key == EOculusXRBone::Wrist_Root)
 		{
-			
+
 			FVector CurrentRightHandLocation = RightXRController->GetComponentLocation();
 			FVector CurrentLeftHandLocation = LeftXRController->GetComponentLocation();
 
@@ -197,10 +197,10 @@ void AGGIPawn::DrawHandPosition()
 		else
 		{
 			FVector CurrentRightBoneLocation = RightXRHand->GetBoneLocation(BoneElem.Value, EBoneSpaces::WorldSpace);
-			FVector CurrentLeftBoneLocation = LeftXRHand->GetBoneLocation(BoneElem.Value, EBoneSpaces::WorldSpace);\
+			FVector CurrentLeftBoneLocation = LeftXRHand->GetBoneLocation(BoneElem.Value, EBoneSpaces::WorldSpace); \
 
-			
-			DrawDebugSphere(GetWorld(), CurrentRightBoneLocation, 0.5f, 8, FColor::Green);
+
+				DrawDebugSphere(GetWorld(), CurrentRightBoneLocation, 0.5f, 8, FColor::Green);
 			DrawDebugSphere(GetWorld(), CurrentLeftBoneLocation, 0.5f, 8, FColor::Green);
 		}
 	}
@@ -214,7 +214,16 @@ bool AGGIPawn::SpawnAndDestroyWeaponMesh()
 		{
 			USkeletalMeshComponent* TempWeaponAsset = CurrentWeaponAsset;
 
+			FVector DetachLocation = TempWeaponAsset->GetComponentLocation();
+			FRotator DetachRotation = TempWeaponAsset->GetComponentRotation();
+
 			CurrentWeaponAsset->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
+			TempWeaponAsset->SetSimulatePhysics(true);
+			TempWeaponAsset->SetEnableGravity(true);
+
+			TempWeaponAsset->SetWorldRotation(DetachRotation);
+			TempWeaponAsset->SetWorldLocation(DetachLocation);
+			
 			CurrentWeaponAsset = nullptr;
 			HaveWeapon = false;
 
@@ -227,26 +236,23 @@ bool AGGIPawn::SpawnAndDestroyWeaponMesh()
 						UE_LOG(LogTemp, Warning, TEXT("Weapon Deleted!"));
 					}
 				}, 3.0f, false);
+
+			return true;
 		}
-		else
+		else if (false == HaveWeapon && (int32)EHandDataLabel::Bow == WeaponIndex)
 		{
 			CurrentWeaponAsset = NewObject<USkeletalMeshComponent>(this);
-
-			if (CurrentWeaponAsset)
+			if (nullptr != CurrentWeaponAsset)
 			{
-				if (false == HaveWeapon && (int32)EHandDataLabel::Bow == WeaponIndex)
+				if (BowMeshAsset)
 				{
-					if (BowMeshAsset)
-					{
-						CurrentWeaponAsset->SetSkeletalMesh(BowMeshAsset);
-					}
-
+					CurrentWeaponAsset->SetSkeletalMesh(BowMeshAsset);
 					CurrentWeaponAsset->AttachToComponent(LeftXRHand, FAttachmentTransformRules::KeepRelativeTransform);
 
+					CurrentWeaponAsset->SetRelativeScale3D(FVector(0.9f, 0.9f, 0.9f));
 					CurrentWeaponAsset->SetRelativeLocation(FVector(0.0f, 6.0f, 3.0f));
 					CurrentWeaponAsset->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
-					CurrentWeaponAsset->SetMobility(EComponentMobility::Movable);
-					CurrentWeaponAsset->SetSimulatePhysics(true);
+					CurrentWeaponAsset->SetSimulatePhysics(false);
 					CurrentWeaponAsset->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 					CurrentWeaponAsset->SetCollisionObjectType(ECC_PhysicsBody);
 					CurrentWeaponAsset->WakeAllRigidBodies();
@@ -255,20 +261,24 @@ bool AGGIPawn::SpawnAndDestroyWeaponMesh()
 
 					HaveWeapon = true;
 					UE_LOG(LogTemp, Warning, TEXT("Skeletal Mesh Spawned!"));
+					return true;
 				}
-				else if (false == HaveWeapon && (int32)EHandDataLabel::Sword == WeaponIndex)
+			}
+		}
+		else if (false == HaveWeapon && (int32)EHandDataLabel::Sword == WeaponIndex)
+		{
+			CurrentWeaponAsset = NewObject<USkeletalMeshComponent>(this);
+			if (nullptr != CurrentWeaponAsset)
+			{
+				if (SwordMeshAsset)
 				{
-					if (SwordMeshAsset)
-					{
-						CurrentWeaponAsset->SetSkeletalMesh(SwordMeshAsset);
-					}
-
+					CurrentWeaponAsset->SetSkeletalMesh(SwordMeshAsset);
 					CurrentWeaponAsset->AttachToComponent(RightXRHand, FAttachmentTransformRules::KeepRelativeTransform);
 
-					CurrentWeaponAsset->SetRelativeLocation(FVector(0.0f, 6.0f, 3.0f));
-					CurrentWeaponAsset->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
-					CurrentWeaponAsset->SetMobility(EComponentMobility::Movable);
-					CurrentWeaponAsset->SetSimulatePhysics(true);
+					CurrentWeaponAsset->SetRelativeScale3D(FVector(0.8f, 0.8f, 0.8f));
+					CurrentWeaponAsset->SetRelativeLocation(FVector(0.0f, -8.0f, -3.0f));
+					CurrentWeaponAsset->SetRelativeRotation(FRotator(-70.0f, 90.0f, 10.0f));
+					CurrentWeaponAsset->SetSimulatePhysics(false);
 					CurrentWeaponAsset->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 					CurrentWeaponAsset->SetCollisionObjectType(ECC_PhysicsBody);
 					CurrentWeaponAsset->WakeAllRigidBodies();
@@ -277,20 +287,24 @@ bool AGGIPawn::SpawnAndDestroyWeaponMesh()
 
 					HaveWeapon = true;
 					UE_LOG(LogTemp, Warning, TEXT("Skeletal Mesh Spawned!"));
+					return true;
 				}
-				else if (false == HaveWeapon && (int32)EHandDataLabel::Pistol == WeaponIndex)
+			}
+		}
+		else if (false == HaveWeapon && (int32)EHandDataLabel::Pistol == WeaponIndex)
+		{
+			CurrentWeaponAsset = NewObject<USkeletalMeshComponent>(this);
+			if (nullptr != CurrentWeaponAsset)
+			{
+				if (PistolMeshAsset)
 				{
-					if (PistolMeshAsset)
-					{
-						CurrentWeaponAsset->SetSkeletalMesh(PistolMeshAsset);
-					}
-
+					CurrentWeaponAsset->SetSkeletalMesh(PistolMeshAsset);
 					CurrentWeaponAsset->AttachToComponent(RightXRHand, FAttachmentTransformRules::KeepRelativeTransform);
 
-					CurrentWeaponAsset->SetRelativeLocation(FVector(0.0f, 6.0f, 3.0f));
-					CurrentWeaponAsset->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
-					CurrentWeaponAsset->SetMobility(EComponentMobility::Movable);
-					CurrentWeaponAsset->SetSimulatePhysics(true);
+					CurrentWeaponAsset->SetRelativeScale3D(FVector(0.8f, 0.8f, 0.8f));
+					CurrentWeaponAsset->SetRelativeLocation(FVector(0.0f, -9.0f, -3.0f));
+					CurrentWeaponAsset->SetRelativeRotation(FRotator(-100.0f, 180.0f, 0.0f));
+					CurrentWeaponAsset->SetSimulatePhysics(false);
 					CurrentWeaponAsset->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 					CurrentWeaponAsset->SetCollisionObjectType(ECC_PhysicsBody);
 					CurrentWeaponAsset->WakeAllRigidBodies();
@@ -299,20 +313,24 @@ bool AGGIPawn::SpawnAndDestroyWeaponMesh()
 
 					HaveWeapon = true;
 					UE_LOG(LogTemp, Warning, TEXT("Skeletal Mesh Spawned!"));
+					return true;
 				}
-				else if (false == HaveWeapon && (int32)EHandDataLabel::Rifle == WeaponIndex)
+			}
+		}
+		else if (false == HaveWeapon && (int32)EHandDataLabel::Rifle == WeaponIndex)
+		{
+			CurrentWeaponAsset = NewObject<USkeletalMeshComponent>(this);
+			if (nullptr != CurrentWeaponAsset)
+			{
+				if (RifleMeshAsset)
 				{
-					if (RifleMeshAsset)
-					{
-						CurrentWeaponAsset->SetSkeletalMesh(RifleMeshAsset);
-					}
-
+					CurrentWeaponAsset->SetSkeletalMesh(RifleMeshAsset);
 					CurrentWeaponAsset->AttachToComponent(RightXRHand, FAttachmentTransformRules::KeepRelativeTransform);
 
-					CurrentWeaponAsset->SetRelativeLocation(FVector(0.0f, 6.0f, 3.0f));
-					CurrentWeaponAsset->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
-					CurrentWeaponAsset->SetMobility(EComponentMobility::Movable);
-					CurrentWeaponAsset->SetSimulatePhysics(true);
+					CurrentWeaponAsset->SetRelativeScale3D(FVector(0.8f, 0.8f, 0.8f));
+					CurrentWeaponAsset->SetRelativeLocation(FVector(0.0f, -8.0f, -4.0f));
+					CurrentWeaponAsset->SetRelativeRotation(FRotator(-90.0f, 180.0f, 0.0f));
+					CurrentWeaponAsset->SetSimulatePhysics(false);
 					CurrentWeaponAsset->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 					CurrentWeaponAsset->SetCollisionObjectType(ECC_PhysicsBody);
 					CurrentWeaponAsset->WakeAllRigidBodies();
@@ -321,20 +339,24 @@ bool AGGIPawn::SpawnAndDestroyWeaponMesh()
 
 					HaveWeapon = true;
 					UE_LOG(LogTemp, Warning, TEXT("Skeletal Mesh Spawned!"));
+					return true;
 				}
-				else if (false == HaveWeapon && (int32)EHandDataLabel::Spear == WeaponIndex)
+			}
+		}
+		else if (false == HaveWeapon && (int32)EHandDataLabel::Spear == WeaponIndex)
+		{
+			CurrentWeaponAsset = NewObject<USkeletalMeshComponent>(this);
+			if (nullptr != CurrentWeaponAsset)
+			{
+				if (SpearMeshAsset)
 				{
-					if (SpearMeshAsset)
-					{
-						CurrentWeaponAsset->SetSkeletalMesh(SpearMeshAsset);
-					}
-
+					CurrentWeaponAsset->SetSkeletalMesh(SpearMeshAsset);
 					CurrentWeaponAsset->AttachToComponent(RightXRHand, FAttachmentTransformRules::KeepRelativeTransform);
 
-					CurrentWeaponAsset->SetRelativeLocation(FVector(0.0f, 6.0f, 3.0f));
+					CurrentWeaponAsset->SetRelativeScale3D(FVector(0.6f, 0.6f, 0.6f));
+					CurrentWeaponAsset->SetRelativeLocation(FVector(30.0f, -9.0f, -4.0f));
 					CurrentWeaponAsset->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
-					CurrentWeaponAsset->SetMobility(EComponentMobility::Movable);
-					CurrentWeaponAsset->SetSimulatePhysics(true);
+					CurrentWeaponAsset->SetSimulatePhysics(false);
 					CurrentWeaponAsset->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 					CurrentWeaponAsset->SetCollisionObjectType(ECC_PhysicsBody);
 					CurrentWeaponAsset->WakeAllRigidBodies();
@@ -343,20 +365,26 @@ bool AGGIPawn::SpawnAndDestroyWeaponMesh()
 
 					HaveWeapon = true;
 					UE_LOG(LogTemp, Warning, TEXT("Skeletal Mesh Spawned!"));
+					return true;
 				}
-				else if (false == HaveWeapon && (int32)EHandDataLabel::Grenade == WeaponIndex)
+			}
+		}
+		else if (false == HaveWeapon && (int32)EHandDataLabel::Grenade == WeaponIndex)
+		{
+			CurrentWeaponAsset = NewObject<USkeletalMeshComponent>(this);
+			if (nullptr != CurrentWeaponAsset)
+			{
+				if (GrenadeMeshAsset)
 				{
-					if (GrenadeMeshAsset)
-					{
-						CurrentWeaponAsset->SetSkeletalMesh(GrenadeMeshAsset);
-					}
-
+					CurrentWeaponAsset->SetSkeletalMesh(GrenadeMeshAsset);
+					
 					CurrentWeaponAsset->AttachToComponent(RightXRHand, FAttachmentTransformRules::KeepRelativeTransform);
 
-					CurrentWeaponAsset->SetRelativeLocation(FVector(0.0f, 6.0f, 3.0f));
+					CurrentWeaponAsset->SetRelativeScale3D(FVector(0.6f, 0.6f, 0.6f));
+					CurrentWeaponAsset->SetRelativeLocation(FVector(0.0f, -10.0f, -4.0f));
 					CurrentWeaponAsset->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
-					CurrentWeaponAsset->SetMobility(EComponentMobility::Movable);
-					CurrentWeaponAsset->SetSimulatePhysics(true);
+					CurrentWeaponAsset->SetSimulatePhysics(false);
+					CurrentWeaponAsset->SetAllBodiesSimulatePhysics(false);
 					CurrentWeaponAsset->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 					CurrentWeaponAsset->SetCollisionObjectType(ECC_PhysicsBody);
 					CurrentWeaponAsset->WakeAllRigidBodies();
@@ -365,9 +393,10 @@ bool AGGIPawn::SpawnAndDestroyWeaponMesh()
 
 					HaveWeapon = true;
 					UE_LOG(LogTemp, Warning, TEXT("Skeletal Mesh Spawned!"));
+					return true;
 				}
 			}
 		}
 	}
-	return true;
+	return false;
 }
