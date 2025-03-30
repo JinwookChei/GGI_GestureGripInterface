@@ -19,6 +19,8 @@
 #include "Animation/SkeletalMeshActor.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 
+#include "IXRTrackingSystem.h"
+
 
 // Sets default values
 AGGIPawn::AGGIPawn()
@@ -88,6 +90,37 @@ void AGGIPawn::Tick(float DeltaTime)
 
 	PreRightXRHandLocation = RightXRController->GetRelativeLocation();
 	PreLeftXRHandLocation = LeftXRController->GetRelativeLocation();
+
+
+
+	// 유레카!!
+	// CameraComponent의 위치와 회전값 가져오기
+	FVector CameraPosition = CameraComponent->GetComponentLocation();
+	FRotator CameraRotation = CameraComponent->GetComponentRotation();
+
+	// XRControllerComponent의 위치 가져오기
+	FVector ControllerPosition = LeftXRController->GetComponentLocation();
+
+	// CameraComponent를 기준으로 상대 위치 벡터 계산
+	FVector RelativePosition = ControllerPosition - CameraPosition;
+
+	// 카메라의 회전값을 반영하여 카메라 좌표계로 상대 위치 변환
+	FVector CameraSpaceRelativePosition = CameraRotation.UnrotateVector(RelativePosition);
+
+	// 로그 출력
+	UE_LOG(LogTemp, Log, TEXT("Relative Position in Camera Space: %s"), *CameraSpaceRelativePosition.ToString());
+
+	// XRController의 회전값 가져오기
+	FRotator ControllerRotation = LeftXRController->GetComponentRotation();
+
+	// 카메라의 회전값 가져오기
+	FRotator CameraRotation = CameraComponent->GetComponentRotation();
+
+	// 카메라의 회전값을 반영하여 XRController의 회전값을 카메라 좌표계로 변환
+	FRotator CameraSpaceControllerRotation = CameraRotation.UnrotateVector(ControllerRotation.Vector()).Rotation();
+
+	// 로그 출력
+	UE_LOG(LogTemp, Log, TEXT("Transformed Controller Rotation: %s"), *CameraSpaceControllerRotation.ToString());
 }
 
 

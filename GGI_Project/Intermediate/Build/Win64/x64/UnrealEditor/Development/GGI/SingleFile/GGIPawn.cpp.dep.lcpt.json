@@ -1104,7 +1104,10 @@
             "d:\\unrealengine\\engine\\source\\runtime\\engine\\classes\\physicsengine\\constraintdrives.h",
             "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\constraintdrives.generated.h",
             "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\constraintinstance.generated.h",
-            "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\physicshandlecomponent.generated.h"
+            "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\physicshandlecomponent.generated.h",
+            "d:\\unrealengine\\engine\\source\\runtime\\headmounteddisplay\\public\\ixrtrackingsystem.h",
+            "d:\\unrealengine\\engine\\source\\runtime\\headmounteddisplay\\public\\ixrinput.h",
+            "d:\\unrealengine\\engine\\source\\runtime\\engine\\public\\stereorendering.h"
         ],
         "ImportedModules": [],
         "ImportedHeaderUnits": []
