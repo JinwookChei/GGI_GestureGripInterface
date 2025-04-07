@@ -23,5 +23,6 @@ public:
 	int32 LSTMTimeStep = 40;
 
 	float RootVelocityWeight = 10000.0f;
+
 	float RootLocationWeight = 0.1f;
 };

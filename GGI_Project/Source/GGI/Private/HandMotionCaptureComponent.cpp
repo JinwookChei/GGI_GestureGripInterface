@@ -8,6 +8,7 @@
 #include "CommonType.h"
 #include "GGIXRHandComponent.h"
 #include "GGIMotionControllerComponent.h"
+#include "Camera/CameraComponent.h"
 
 #include "OculusXRInputFunctionLibrary.h"
 #include "Components/PoseableMeshComponent.h"
@@ -103,8 +104,24 @@ void UHandMotionCaptureComponent::TickComponent(float DeltaTime, ELevelTick Tick
 		AccumulatedDeltaTime = 0;
 	}
 
-	PreRightHandLocation = OwnerRightXRController->GetRelativeLocation();
-	PreLeftHandLocation = OwnerLeftXRController->GetRelativeLocation();
+	AGGIPawn* Owner = Cast<AGGIPawn>(GetOwner());
+	if (Owner == nullptr)
+	{
+		return;
+	}
+
+	// PreCameraSpaceWristRootLocation
+	UCameraComponent* CameraComponent = Owner->FindComponentByClass<UCameraComponent>();
+	FVector CameraPosition = CameraComponent->GetComponentLocation();
+	FRotator CameraRotation = CameraComponent->GetComponentRotation();
+
+	FVector RightWristRootPosition = OwnerRightXRController->GetComponentLocation();
+	FVector RightRelativeWristRootPosition = RightWristRootPosition - CameraPosition;
+	PreCameraSpaceRightWristRootLocation = CameraRotation.UnrotateVector(RightRelativeWristRootPosition);
+
+	FVector LeftWristRootPosition = OwnerLeftXRController->GetComponentLocation();
+	FVector LeftRelativeWristRootPosition = LeftWristRootPosition - CameraPosition;
+	PreCameraSpaceLeftWristRootLocation = CameraRotation.UnrotateVector(LeftRelativeWristRootPosition);
 }
 
 bool UHandMotionCaptureComponent::Initialize(UGGIMotionControllerComponent* InRightXRController, UGGIMotionControllerComponent* InLeftXRController, UGGIXRHandComponent* InRightXRHand, UGGIXRHandComponent* InLeftXRHand)
@@ -232,32 +249,58 @@ void UHandMotionCaptureComponent::ExportHandDatasToCSV(float DeltaTime)
 		{
 
 		}
+
 		else if (BoneElem.Key == EOculusXRBone::Wrist_Root)
 		{
+			// À¯·¹Ä«!!
+			AGGIPawn* Owner = Cast<AGGIPawn>(GetOwner());
 
-			FVector CurrentRightHandLocation = OwnerRightXRController->GetRelativeLocation();
-			FVector RightHandWristRootVelocity = CurrentRightHandLocation - PreRightHandLocation;
+			UCameraComponent* CameraComponent = Owner->FindComponentByClass<UCameraComponent>();
+			FVector CameraPosition = CameraComponent->GetComponentLocation();
+			FRotator CameraRotation = CameraComponent->GetComponentRotation();
+
+			//Wirst Root Location
+			FVector CurrentRightWristRootPosition = OwnerRightXRController->GetComponentLocation();
+			FVector RightRelativeWristRootPosition = CurrentRightWristRootPosition - CameraPosition;
+			FVector CameraSpaceRightWristRootPosition = CameraRotation.UnrotateVector(RightRelativeWristRootPosition);
+
+			FVector CurrentLeftWristRootPosition = OwnerLeftXRController->GetComponentLocation();
+			FVector LeftRelativeWristRootPosition = CurrentLeftWristRootPosition - CameraPosition;
+			FVector CameraSpaceLeftWristRootPosition = CameraRotation.UnrotateVector(LeftRelativeWristRootPosition);
+
+
+			FVector RightHandWristRootVelocity = CameraSpaceRightWristRootPosition - PreCameraSpaceRightWristRootLocation;
 			RightHandWristRootVelocity *= DeltaTime;
 			RightHandWristRootVelocity *= RootVelocityWeight;
 
-			FVector CurrentLeftHandLocation = OwnerLeftXRController->GetRelativeLocation();
-			FVector LeftHandWristRootVelocity = CurrentLeftHandLocation - PreLeftHandLocation;
+
+			FVector LeftHandWristRootVelocity = CameraSpaceLeftWristRootPosition - PreCameraSpaceLeftWristRootLocation;
 			LeftHandWristRootVelocity *= DeltaTime;
 			LeftHandWristRootVelocity *= RootVelocityWeight;
 
-			FVector HandRelativeLocation = CurrentRightHandLocation - CurrentLeftHandLocation;
+			// Hand Distance Vector
+			//FVector CurrentRightHandLocation = OwnerRightXRController->GetRelativeLocation();
+			//FVector CurrentLeftHandLocation = OwnerRightXRController->GetRelativeLocation();
+			FVector HandRelativeLocation = CameraSpaceRightWristRootPosition - CameraSpaceLeftWristRootPosition;
+
 
 			CSVData += FString::Printf(TEXT("%f,%f,%f,"), HandRelativeLocation.X, HandRelativeLocation.Y, HandRelativeLocation.Z);
 			CSVData += FString::Printf(TEXT("%f,%f,%f,"), RightHandWristRootVelocity.X, RightHandWristRootVelocity.Y, RightHandWristRootVelocity.Z);
 			CSVData += FString::Printf(TEXT("%f,%f,%f,"), LeftHandWristRootVelocity.X, LeftHandWristRootVelocity.Y, LeftHandWristRootVelocity.Z);
 
 
-			FRotator RightWristRootRelativeRotation = OwnerRightXRController->GetRelativeRotation();
-			FRotator LeftWristRootRelativeRotation = OwnerLeftXRController->GetRelativeRotation();
+			//Wirst Root Rotation
+			FTransform CameraTransform = CameraComponent->GetComponentTransform();
 
-			CSVData += FString::Printf(TEXT("%f,%f,%f,"), RightWristRootRelativeRotation.Pitch, RightWristRootRelativeRotation.Yaw, RightWristRootRelativeRotation.Roll);
-			CSVData += FString::Printf(TEXT("%f,%f,%f,"), LeftWristRootRelativeRotation.Pitch, LeftWristRootRelativeRotation.Yaw, LeftWristRootRelativeRotation.Roll);
+			FQuat RightWristRootQuat = OwnerRightXRController->GetComponentQuat();
+			FRotator CameraSpaceRightWristRootRotation = CameraTransform.InverseTransformRotation(RightWristRootQuat).Rotator();
 
+			FQuat LeftWristRootQuat = OwnerLeftXRController->GetComponentQuat();
+			FRotator CameraSpaceLeftWristRootRotation = CameraTransform.InverseTransformRotation(LeftWristRootQuat).Rotator();
+
+
+			CSVData += FString::Printf(TEXT("%f,%f,%f,"), CameraSpaceRightWristRootRotation.Pitch, CameraSpaceRightWristRootRotation.Yaw, CameraSpaceRightWristRootRotation.Roll);
+			CSVData += FString::Printf(TEXT("%f,%f,%f,"), CameraSpaceLeftWristRootRotation.Pitch, CameraSpaceLeftWristRootRotation.Yaw, CameraSpaceLeftWristRootRotation.Roll);
 		}
 
 

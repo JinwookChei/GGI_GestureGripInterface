@@ -58,9 +58,9 @@ private:
 
 	EHandDataLabel HandDataLabel;
 
-	FVector PreRightHandLocation;
+	FVector PreCameraSpaceRightWristRootLocation;
 
-	FVector PreLeftHandLocation;
+	FVector PreCameraSpaceLeftWristRootLocation;
 
 protected:
 

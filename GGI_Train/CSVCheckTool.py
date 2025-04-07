@@ -1,7 +1,7 @@
 import pandas as pd
 
 # CSV 파일 읽기
-df = pd.read_csv('D:\GGI_GestureGripInterface\GGI_Train\dataset\Sword.csv')  # 파일명을 적절히 변경하세요
+df = pd.read_csv('D:\GGI_GestureGripInterface\GGI_Train\dataset\Grenade3.csv')  # 파일명을 적절히 변경하세요
 
 # 값이 0을 포함하는 행 찾기
 rows_with_zero = df[(df == 0).any(axis=1)]

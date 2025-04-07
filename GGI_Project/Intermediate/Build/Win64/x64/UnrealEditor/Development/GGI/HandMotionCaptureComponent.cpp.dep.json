@@ -46,7 +46,9 @@
             "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\headmounteddisplay\\uht\\imotioncontroller.generated.h",
             "d:\\unrealengine\\engine\\source\\runtime\\headmounteddisplay\\public\\lateupdatemanager.h",
             "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\headmounteddisplay\\uht\\motioncontrollercomponent.generated.h",
-            "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\unrealeditor\\inc\\ggi\\uht\\ggimotioncontrollercomponent.generated.h"
+            "d:\\ggi_gesturegripinterface\\ggi_project\\intermediate\\build\\win64\\unrealeditor\\inc\\ggi\\uht\\ggimotioncontrollercomponent.generated.h",
+            "d:\\unrealengine\\engine\\source\\runtime\\engine\\classes\\camera\\cameracomponent.h",
+            "d:\\unrealengine\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\cameracomponent.generated.h"
         ],
         "ImportedModules": [],
         "ImportedHeaderUnits": []

@@ -86,9 +86,9 @@ private:
 	
 	class UGGIGameInstance* GGIGameInstance;
 
-	FVector PreRightXRHandLocation;
+	FVector PreCameraSpaceRightWristRootLocation;
 
-	FVector PreLeftXRHandLocation;
+	FVector PreCameraSpaceLeftWristRootLocation;
 
 	float RootVelocityWeight;
 

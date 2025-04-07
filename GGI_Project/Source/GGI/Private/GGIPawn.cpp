@@ -84,43 +84,22 @@ void AGGIPawn::Tick(float DeltaTime)
 
 	DrawHandPosition();
 
-	UpdateHandMotionSequence(DeltaTime);
+	//UpdateHandMotionSequence(DeltaTime);
 
-	SpawnAndDestroyWeaponMesh();
-
-	PreRightXRHandLocation = RightXRController->GetRelativeLocation();
-	PreLeftXRHandLocation = LeftXRController->GetRelativeLocation();
+	//SpawnAndDestroyWeaponMesh();
 
 
+	// PreCameraSpaceWristRootLocation
+	//FVector CameraPosition = CameraComponent->GetComponentLocation();
+	//FRotator CameraRotation = CameraComponent->GetComponentRotation();
 
-	// 유레카!!
-	// CameraComponent의 위치와 회전값 가져오기
-	FVector CameraPosition = CameraComponent->GetComponentLocation();
-	FRotator CameraRotation = CameraComponent->GetComponentRotation();
+	//FVector RightWristRootPosition = RightXRController->GetComponentLocation();
+	//FVector RightRelativeWristRootPosition = RightWristRootPosition - CameraPosition;
+	//PreCameraSpaceRightWristRootLocation = CameraRotation.UnrotateVector(RightRelativeWristRootPosition);
 
-	// XRControllerComponent의 위치 가져오기
-	FVector ControllerPosition = LeftXRController->GetComponentLocation();
-
-	// CameraComponent를 기준으로 상대 위치 벡터 계산
-	FVector RelativePosition = ControllerPosition - CameraPosition;
-
-	// 카메라의 회전값을 반영하여 카메라 좌표계로 상대 위치 변환
-	FVector CameraSpaceRelativePosition = CameraRotation.UnrotateVector(RelativePosition);
-
-	// 로그 출력
-	UE_LOG(LogTemp, Log, TEXT("Relative Position in Camera Space: %s"), *CameraSpaceRelativePosition.ToString());
-
-	// XRController의 회전값 가져오기
-	FRotator ControllerRotation = LeftXRController->GetComponentRotation();
-
-	// 카메라의 회전값 가져오기
-	FRotator CameraRotation = CameraComponent->GetComponentRotation();
-
-	// 카메라의 회전값을 반영하여 XRController의 회전값을 카메라 좌표계로 변환
-	FRotator CameraSpaceControllerRotation = CameraRotation.UnrotateVector(ControllerRotation.Vector()).Rotation();
-
-	// 로그 출력
-	UE_LOG(LogTemp, Log, TEXT("Transformed Controller Rotation: %s"), *CameraSpaceControllerRotation.ToString());
+	//FVector LeftWristRootPosition = LeftXRController->GetComponentLocation();
+	//FVector LeftRelativeWristRootPosition = LeftWristRootPosition - CameraPosition;
+	//PreCameraSpaceLeftWristRootLocation = CameraRotation.UnrotateVector(LeftRelativeWristRootPosition);
 }
 
 
@@ -148,18 +127,31 @@ void AGGIPawn::UpdateHandMotionSequence(float DeltaTime)
 		}
 		else if (BoneElem.Key == EOculusXRBone::Wrist_Root)
 		{
+			FVector CameraPosition = CameraComponent->GetComponentLocation();
+			FRotator CameraRotation = CameraComponent->GetComponentRotation();
 
-			FVector CurrentRightHandLocation = RightXRController->GetRelativeLocation();
-			FVector RightHandWristRootVelocity = CurrentRightHandLocation - PreRightXRHandLocation;
+			//Wirst Root Location
+			FVector CurrentRightWristRootPosition = RightXRController->GetComponentLocation();
+			FVector RightRelativeWristRootPosition = CurrentRightWristRootPosition - CameraPosition;
+			FVector CameraSpaceRightWristRootPosition = CameraRotation.UnrotateVector(RightRelativeWristRootPosition);
+
+			FVector CurrentLeftWristRootPosition = LeftXRController->GetComponentLocation();
+			FVector LeftRelativeWristRootPosition = CurrentLeftWristRootPosition - CameraPosition;
+			FVector CameraSpaceLeftWristRootPosition = CameraRotation.UnrotateVector(LeftRelativeWristRootPosition);
+
+
+			FVector RightHandWristRootVelocity = CameraSpaceRightWristRootPosition - PreCameraSpaceRightWristRootLocation;
 			RightHandWristRootVelocity *= DeltaTime;
 			RightHandWristRootVelocity *= RootVelocityWeight;
 
-			FVector CurrentLeftHandLocation = LeftXRController->GetRelativeLocation();
-			FVector LeftHandWristRootVelocity = CurrentLeftHandLocation - PreLeftXRHandLocation;
+
+			FVector LeftHandWristRootVelocity = CameraSpaceLeftWristRootPosition - PreCameraSpaceLeftWristRootLocation;
 			LeftHandWristRootVelocity *= DeltaTime;
 			LeftHandWristRootVelocity *= RootVelocityWeight;
 
-			FVector HandRelativeLocation = CurrentRightHandLocation - CurrentLeftHandLocation;
+			// Hand Distance Vector
+			FVector HandRelativeLocation = CameraSpaceRightWristRootPosition - CameraSpaceLeftWristRootPosition;
+
 
 			HandMotionDataArray.Push(HandRelativeLocation.X);
 			HandMotionDataArray.Push(HandRelativeLocation.Y);
@@ -174,16 +166,24 @@ void AGGIPawn::UpdateHandMotionSequence(float DeltaTime)
 			HandMotionDataArray.Push(LeftHandWristRootVelocity.Y);
 			HandMotionDataArray.Push(LeftHandWristRootVelocity.Z);
 
-			FRotator RightWristRootRelativeRotation = RightXRController->GetRelativeRotation();
-			FRotator LeftWristRootRelativeRotation = LeftXRController->GetRelativeRotation();
+			//Wirst Root Rotation
+			FRotator RightWristRootRotation = RightXRController->GetComponentRotation();
+			FRotator CameraSpaceRightWristRootRotation = CameraRotation.UnrotateVector(RightWristRootRotation.Vector()).Rotation();
 
-			HandMotionDataArray.Push(RightWristRootRelativeRotation.Pitch);
-			HandMotionDataArray.Push(RightWristRootRelativeRotation.Yaw);
-			HandMotionDataArray.Push(RightWristRootRelativeRotation.Roll);
+			FRotator LeftWristRootRotation = LeftXRController->GetComponentRotation();
+			FRotator CameraSpaceLeftWristRootRotation = CameraRotation.UnrotateVector(LeftWristRootRotation.Vector()).Rotation();
 
-			HandMotionDataArray.Push(LeftWristRootRelativeRotation.Pitch);
-			HandMotionDataArray.Push(LeftWristRootRelativeRotation.Yaw);
-			HandMotionDataArray.Push(LeftWristRootRelativeRotation.Roll);
+
+			HandMotionDataArray.Push(CameraSpaceRightWristRootRotation.Pitch);
+			HandMotionDataArray.Push(CameraSpaceRightWristRootRotation.Yaw);
+			HandMotionDataArray.Push(CameraSpaceRightWristRootRotation.Roll);
+
+			HandMotionDataArray.Push(CameraSpaceLeftWristRootRotation.Pitch);
+			HandMotionDataArray.Push(CameraSpaceLeftWristRootRotation.Yaw);
+			HandMotionDataArray.Push(CameraSpaceLeftWristRootRotation.Roll);
+
+
+			UE_LOG(LogTemp, Log, TEXT("Transformed Controller Rotation: %s"), *CameraSpaceLeftWristRootRotation.ToString());
 		}
 		else
 		{
