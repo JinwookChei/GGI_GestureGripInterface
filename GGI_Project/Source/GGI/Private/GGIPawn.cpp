@@ -84,22 +84,23 @@ void AGGIPawn::Tick(float DeltaTime)
 
 	DrawHandPosition();
 
-	//UpdateHandMotionSequence(DeltaTime);
+	UpdateHandMotionSequence(DeltaTime);
 
-	//SpawnAndDestroyWeaponMesh();
+	SpawnAndDestroyWeaponMesh();
+
 
 
 	// PreCameraSpaceWristRootLocation
-	//FVector CameraPosition = CameraComponent->GetComponentLocation();
-	//FRotator CameraRotation = CameraComponent->GetComponentRotation();
+	FVector CameraPosition = CameraComponent->GetComponentLocation();
+	FRotator CameraRotation = CameraComponent->GetComponentRotation();
 
-	//FVector RightWristRootPosition = RightXRController->GetComponentLocation();
-	//FVector RightRelativeWristRootPosition = RightWristRootPosition - CameraPosition;
-	//PreCameraSpaceRightWristRootLocation = CameraRotation.UnrotateVector(RightRelativeWristRootPosition);
+	FVector RightWristRootPosition = RightXRController->GetComponentLocation();
+	FVector RightRelativeWristRootPosition = RightWristRootPosition - CameraPosition;
+	PreCameraSpaceRightWristRootLocation = CameraRotation.UnrotateVector(RightRelativeWristRootPosition);
 
-	//FVector LeftWristRootPosition = LeftXRController->GetComponentLocation();
-	//FVector LeftRelativeWristRootPosition = LeftWristRootPosition - CameraPosition;
-	//PreCameraSpaceLeftWristRootLocation = CameraRotation.UnrotateVector(LeftRelativeWristRootPosition);
+	FVector LeftWristRootPosition = LeftXRController->GetComponentLocation();
+	FVector LeftRelativeWristRootPosition = LeftWristRootPosition - CameraPosition;
+	PreCameraSpaceLeftWristRootLocation = CameraRotation.UnrotateVector(LeftRelativeWristRootPosition);
 }
 
 
@@ -167,12 +168,14 @@ void AGGIPawn::UpdateHandMotionSequence(float DeltaTime)
 			HandMotionDataArray.Push(LeftHandWristRootVelocity.Z);
 
 			//Wirst Root Rotation
-			FRotator RightWristRootRotation = RightXRController->GetComponentRotation();
-			FRotator CameraSpaceRightWristRootRotation = CameraRotation.UnrotateVector(RightWristRootRotation.Vector()).Rotation();
 
-			FRotator LeftWristRootRotation = LeftXRController->GetComponentRotation();
-			FRotator CameraSpaceLeftWristRootRotation = CameraRotation.UnrotateVector(LeftWristRootRotation.Vector()).Rotation();
+			FTransform CameraTransform = CameraComponent->GetComponentTransform();
 
+			FQuat RightWristRootQuat = RightXRController->GetComponentQuat();
+			FRotator CameraSpaceRightWristRootRotation = CameraTransform.InverseTransformRotation(RightWristRootQuat).Rotator();
+
+			FQuat LeftWristRootQuat = LeftXRController->GetComponentQuat();
+			FRotator CameraSpaceLeftWristRootRotation = CameraTransform.InverseTransformRotation(LeftWristRootQuat).Rotator();
 
 			HandMotionDataArray.Push(CameraSpaceRightWristRootRotation.Pitch);
 			HandMotionDataArray.Push(CameraSpaceRightWristRootRotation.Yaw);
@@ -181,9 +184,6 @@ void AGGIPawn::UpdateHandMotionSequence(float DeltaTime)
 			HandMotionDataArray.Push(CameraSpaceLeftWristRootRotation.Pitch);
 			HandMotionDataArray.Push(CameraSpaceLeftWristRootRotation.Yaw);
 			HandMotionDataArray.Push(CameraSpaceLeftWristRootRotation.Roll);
-
-
-			UE_LOG(LogTemp, Log, TEXT("Transformed Controller Rotation: %s"), *CameraSpaceLeftWristRootRotation.ToString());
 		}
 		else
 		{
@@ -256,7 +256,7 @@ bool AGGIPawn::SpawnAndDestroyWeaponMesh()
 
 			TempWeaponAsset->SetWorldRotation(DetachRotation);
 			TempWeaponAsset->SetWorldLocation(DetachLocation);
-			
+
 			CurrentWeaponAsset = nullptr;
 			HaveWeapon = false;
 
@@ -410,7 +410,7 @@ bool AGGIPawn::SpawnAndDestroyWeaponMesh()
 				if (GrenadeMeshAsset)
 				{
 					CurrentWeaponAsset->SetSkeletalMesh(GrenadeMeshAsset);
-					
+
 					CurrentWeaponAsset->AttachToComponent(RightXRHand, FAttachmentTransformRules::KeepRelativeTransform);
 
 					CurrentWeaponAsset->SetRelativeScale3D(FVector(0.6f, 0.6f, 0.6f));

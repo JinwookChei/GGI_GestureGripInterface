@@ -24,10 +24,10 @@ void ULSTMInputComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	Threshold = 0.97f;
+	Threshold = 0.75f;
 	PreIndex = -1;
 	SameCount = 0;
-	SameCountThreshold = 15;
+	SameCountThreshold = 10;
 
 	Initialize();
 }
@@ -190,49 +190,49 @@ void ULSTMInputComponent::ExecuteNNETickInference(const TArray<float>& InLSTMInp
 			{
 				if (MaxIndex == -1)
 				{
-					Message = TEXT("???");
+					//Message = TEXT("???");
 					TextColor = FColor::Black;
 					InWeaponIndex = -1;
 				}
 				else if (MaxIndex == 0)
 				{
-					Message = TEXT("Idle");
+					//Message = TEXT("Idle");
 					TextColor = FColor::Purple;
 					InWeaponIndex = 0;
 				}
 				else if (MaxIndex == 1)
 				{
-					Message = TEXT("Bow");
+					//Message = TEXT("Bow");
 					TextColor = FColor::Purple;
 					InWeaponIndex = 1;
 				}
 				else if (MaxIndex == 2)
 				{
-					Message = TEXT("Sword");
+					//Message = TEXT("Sword");
 					TextColor = FColor::Red;
 					InWeaponIndex = 2;
 				}
 				else if (MaxIndex == 3)
 				{
-					Message = TEXT("Pistol");
+					//Message = TEXT("Pistol");
 					TextColor = FColor::Blue;
 					InWeaponIndex = 3;
 				}
 				else if (MaxIndex == 4)
 				{
-					Message = TEXT("Rifle");
+					//Message = TEXT("Rifle");
 					TextColor = FColor::Orange;
 					InWeaponIndex = 4;
 				}
 				else if (MaxIndex == 5)
 				{
-					Message = TEXT("Spear");
+					//Message = TEXT("Spear");
 					TextColor = FColor::Yellow;
 					InWeaponIndex = 5;
 				}
 				else if (MaxIndex == 6)
 				{
-					Message = TEXT("Grenade");
+					//Message = TEXT("Grenade");
 					TextColor = FColor::Cyan;
 					InWeaponIndex = 6;
 				}
@@ -241,7 +241,7 @@ void ULSTMInputComponent::ExecuteNNETickInference(const TArray<float>& InLSTMInp
 			}
 			else
 			{
-				Message = TEXT("?????????");
+				//Message = TEXT("?????????");
 				TextColor = FColor::Black;
 				InWeaponIndex = -1;
 			}
